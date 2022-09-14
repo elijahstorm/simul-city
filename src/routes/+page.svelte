@@ -4,7 +4,7 @@
 
 <section>
 	<h1>Welcome to SimulCity</h1>
-	<img src="{base}/logo/logo_1.png" alt="logo" />
+	<img src="{base}/logo/logo_main.png" alt="logo" />
 	<p>Coming soon...</p>
 </section>
 
