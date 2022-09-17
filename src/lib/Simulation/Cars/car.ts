@@ -15,8 +15,7 @@ const draw = (ctx: ContextProp, color: Color) => (box: HitBox) => {
 	ctx.fillStyle = color
 	ctx.fillRect(-box.width / 2, -box.height / 2, box.width, box.height)
 	ctx.fillStyle = 'red'
-	ctx.fillRect(-box.width / 2, -box.height / 2, 10, 10)
-	ctx.fillRect(20 - box.width / 2, -box.height / 2, 10, 10)
+	ctx.fillRect(-5, -box.height / 2, 10, 10)
 	ctx.restore()
 	return ctx
 }

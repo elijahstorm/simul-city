@@ -3,9 +3,13 @@
 	import { car } from '$lib/Simulation/Cars/car'
 	import { ControlsConfig } from '$lib/Simulation/Controls/controls'
 	import { city } from '$lib/Simulation/Environment/city'
-	import { onMount, afterUpdate, tick } from 'svelte'
+	import { onMount, tick } from 'svelte'
 	import { canvas, context, die, logs } from '$lib/stores'
 	import { onDestroy } from 'svelte'
+	import { lerp } from '$lib/utils'
+	import { GRID_SIZE } from '$lib/Simulation/Road/road'
+	import { waveCollapseGenerate } from '$lib/Simulation/Road/generate'
+	import { LANE_AMOUNT } from '$lib/Simulation/Road/render'
 
 	export const fps = 60
 	export const tpf = 1000 / fps
@@ -13,23 +17,28 @@
 	let innerWidth: number
 	let innerHeight: number
 
-	onMount(() => {
+	onMount(async () => {
 		canvas.set(canvasElement)
 		context.set($canvas.getContext('2d') as ContextProp)
-	})
 
-	afterUpdate(async () => {
 		await tick()
+
+		const carWidth = (200 / LANE_AMOUNT) * 0.6
 
 		carSpots.fill(emptyBox).forEach(
 			(v, i) =>
 				(carSpots[i] = {
 					box: {
-						x: Math.random() * $canvas.width,
+						x: lerp(
+							0,
+							$canvas.width / GRID_SIZE,
+							(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
+						),
 						y: Math.random() * $canvas.height,
-						width: 30,
-						height: 50,
-						angle: Math.random() * Math.PI,
+						width: carWidth,
+						height: carWidth * 1.7,
+						angle: 0,
+						// angle: Math.random() * Math.PI,
 						physics: {
 							momentum: {
 								direction: 0,
@@ -47,6 +56,7 @@
 		loop(new Date())
 	})
 
+	const map = waveCollapseGenerate(GRID_SIZE)
 	const colors: Color[] = ['#0f0', '#000', '#0ff', '#f0f', '#fff']
 	const carSpots: Car[] = new Array(5)
 	const emptyBox: Car = {
@@ -63,11 +73,14 @@
 	let destroyed = false
 	const loop = (lastTime: Date) => {
 		if (destroyed) return
-		const size: Size = {
-			width: $canvas.width,
-			height: $canvas.height
+		const world: World = {
+			map,
+			size: {
+				width: GRID_SIZE * 200,
+				height: GRID_SIZE * 200
+			}
 		}
-		pipe($context, city(size), car(carSpots))
+		pipe($context, city(world), car(carSpots))
 		frameDelay((time: Date) => {
 			logs.update((logs) => ({
 				...logs,

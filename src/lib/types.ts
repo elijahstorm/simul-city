@@ -26,6 +26,17 @@ type CanvasProps = Size & {
 	time: number
 }
 
+type TileRender = (ctx: ContextProp) => (size: Size) => void
+type RenderConfig = {
+	draw: TileRender
+	rotate: 0 | 1 | 2 | 3
+}
+
+type World = {
+	map: RenderConfig[]
+	size: Size
+}
+
 type HitBox = Size & {
 	x: number
 	y: number
