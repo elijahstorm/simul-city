@@ -4,11 +4,14 @@ specifiers:
   '@iconify/svelte': ^3.0.0
   '@sveltejs/adapter-static': 1.0.0-next.43
   '@sveltejs/kit': next
+  '@types/gl-vec2': ^1.3.2
   '@typescript-eslint/eslint-plugin': ^5.37.0
   '@typescript-eslint/parser': ^5.37.0
   eslint: ^8.23.1
   eslint-config-prettier: ^8.5.0
   eslint-plugin-svelte3: ^4.0.0
+  fp-ts: ^2.12.3
+  gl-vec2: ^1.3.0
   prettier: ^2.7.1
   prettier-plugin-svelte: ^2.7.0
   svelte: ^3.50.1
@@ -18,10 +21,15 @@ specifiers:
   typescript: ^4.8.3
   vite: ^3.1.0
 
+dependencies:
+  fp-ts: 2.12.3
+  gl-vec2: 1.3.0
+
 devDependencies:
   '@iconify/svelte': 3.0.0_svelte@3.50.1
   '@sveltejs/adapter-static': 1.0.0-next.43
-  '@sveltejs/kit': 1.0.0-next.481_svelte@3.50.1+vite@3.1.0
+  '@sveltejs/kit': 1.0.0-next.482_svelte@3.50.1+vite@3.1.0
+  '@types/gl-vec2': 1.3.2
   '@typescript-eslint/eslint-plugin': 5.37.0_22c5fnooleyfkzrkkgdmel5kmi
   '@typescript-eslint/parser': 5.37.0_irgkl5vooow2ydyo6aokmferha
   eslint: 8.23.1
@@ -154,8 +162,8 @@ packages:
     resolution: {integrity: sha512-PAgSp1GA8HkYE4p30/sBvJme2nefhcTBJafqQdMNoUksWZF2WzuL8OEO8wa9ndE6cghcGk3j6Ve0Oskg/wtTOw==}
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.481_svelte@3.50.1+vite@3.1.0:
-    resolution: {integrity: sha512-rgt6KKjUmx/S/a/duntAp+yds9F3fSm6uq8nvfWHuT1aVGSC5sOdNDrKqck7PCUc9/GPJ6WJu3et5R69hqevRw==}
+  /@sveltejs/kit/1.0.0-next.482_svelte@3.50.1+vite@3.1.0:
+    resolution: {integrity: sha512-ZPWVtY1ZBpVtqblZBuvVWyAEblV/89PXzlUKXPX5+4BpM3UbKNlXRXwNOC3MrcyniYuJQtU7uLvFZvQHcOKEcQ==}
     engines: {node: '>=16.14'}
     hasBin: true
     requiresBuild: true
@@ -203,6 +211,10 @@ packages:
       vite: 3.1.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@types/gl-vec2/1.3.2:
+    resolution: {integrity: sha512-GNiqmx1B9QuhuK0ACgwZ+YTWNjy2RjjorEMoCJEZWYcMbsJ82y7mEfmKkfC5Y+nqCafVlocRvbu83UNo/05JEg==}
     dev: true
 
   /@types/json-schema/7.0.11:
@@ -976,6 +988,10 @@ packages:
       fetch-blob: 3.2.0
     dev: true
 
+  /fp-ts/2.12.3:
+    resolution: {integrity: sha512-8m0XvW8kZbfnJOA4NvSVXu95mLbPf4LQGwQyqVukIYS4KzSNJiyKSmuZUmbVHteUi6MGkAJGPb0goPZqI+Tsqg==}
+    dev: false
+
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
@@ -995,6 +1011,10 @@ packages:
   /functional-red-black-tree/1.0.1:
     resolution: {integrity: sha512-dsKNQNdj6xA3T+QlADDA7mOSlX0qiMINjn0cgr+eGHGsbSHzTabcIogz2+p/iqP1Xs6EP/sS2SbqH+brGTbq0g==}
     dev: true
+
+  /gl-vec2/1.3.0:
+    resolution: {integrity: sha512-YiqaAuNsheWmUV0Sa8k94kBB0D6RWjwZztyO+trEYS8KzJ6OQB/4686gdrf59wld4hHFIvaxynO3nRxpk1Ij/A==}
+    dev: false
 
   /glob-parent/5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}

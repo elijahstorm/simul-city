@@ -1,5 +1,6 @@
 <script lang="ts">
-	export let url: string = "/haja/logo_horizontal_full.png"
+	import { base } from '$app/paths'
+	export let url: string = base + '/logo/logo_main.png'
 
 	export let width = 200
 	export let height = 150

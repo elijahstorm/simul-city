@@ -1,0 +1,22 @@
+import { pipe } from '$lib/fp-ts'
+import { checkControls } from '../Controls/controls'
+import { applyForce, worldWrap } from './movement'
+
+export const car = (cars: Car[]) => (env: Enviornment) =>
+	cars.forEach((car) =>
+		pipe(checkControls(), applyForce(car.box), worldWrap(env.size), draw(env.ctx, car.color))
+	)
+
+const draw = (ctx: ContextProp, color: Color) => (box: HitBox) => {
+	ctx.save()
+	ctx.translate(box.x, box.y)
+	ctx.rotate(box.angle)
+	ctx.beginPath()
+	ctx.fillStyle = color
+	ctx.fillRect(-box.width / 2, -box.height / 2, box.width, box.height)
+	ctx.fillStyle = 'red'
+	ctx.fillRect(-box.width / 2, -box.height / 2, 10, 10)
+	ctx.fillRect(20 - box.width / 2, -box.height / 2, 10, 10)
+	ctx.restore()
+	return ctx
+}

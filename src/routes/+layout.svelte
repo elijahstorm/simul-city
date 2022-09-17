@@ -1,5 +1,5 @@
-<script>
-	import { base } from "$app/paths"
+<script lang="ts">
+	import { base } from '$app/paths'
 </script>
 
 <svelte:head>
