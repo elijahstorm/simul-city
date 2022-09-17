@@ -2,12 +2,11 @@
 	import { pipe } from '$lib/fp-ts'
 	import { car } from '$lib/Simulation/Cars/car'
 	import { ControlsConfig } from '$lib/Simulation/Controls/controls'
-	import { city } from '$lib/Simulation/Environment/city'
+	import { city, clean } from '$lib/Simulation/Environment/city'
 	import { onMount, tick } from 'svelte'
-	import { canvas, context, die, logs } from '$lib/stores'
+	import { canvas, context, die, logs, controls } from '$lib/stores'
 	import { onDestroy } from 'svelte'
 	import { lerp } from '$lib/utils'
-	import { GRID_SIZE } from '$lib/Simulation/Road/road'
 	import { waveCollapseGenerate } from '$lib/Simulation/Road/generate'
 	import { LANE_AMOUNT } from '$lib/Simulation/Road/render'
 
@@ -31,7 +30,7 @@
 					box: {
 						x: lerp(
 							0,
-							$canvas.width / GRID_SIZE,
+							$canvas.width / $controls.gridSize,
 							(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
 						),
 						y: Math.random() * $canvas.height,
@@ -56,7 +55,9 @@
 		loop(new Date())
 	})
 
-	const map = waveCollapseGenerate(GRID_SIZE)
+	let map = waveCollapseGenerate(Number($controls.gridSize))
+	$: map = waveCollapseGenerate(Number($controls.gridSize))
+
 	const colors: Color[] = ['#0f0', '#000', '#0ff', '#f0f', '#fff']
 	const carSpots: Car[] = new Array(5)
 	const emptyBox: Car = {
@@ -75,12 +76,18 @@
 		if (destroyed) return
 		const world: World = {
 			map,
+			dim: $controls.gridSize,
 			size: {
-				width: GRID_SIZE * 200,
-				height: GRID_SIZE * 200
+				width: $controls.gridSize * 100,
+				height: $controls.gridSize * 100
 			}
 		}
-		pipe($context, city(world), car(carSpots))
+		pipe(
+			$context,
+			clean({ width: $canvas.width, height: $canvas.height }),
+			city(world),
+			car(carSpots)
+		)
 		frameDelay((time: Date) => {
 			logs.update((logs) => ({
 				...logs,

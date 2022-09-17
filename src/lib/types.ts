@@ -34,6 +34,7 @@ type RenderConfig = {
 
 type World = {
 	map: RenderConfig[]
+	dim: number
 	size: Size
 }
 
