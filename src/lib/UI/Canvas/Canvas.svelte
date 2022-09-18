@@ -9,6 +9,7 @@
 	import { lerp } from '$lib/utils'
 	import { waveCollapseGenerate } from '$lib/Simulation/Road/generate'
 	import { LANE_AMOUNT } from '$lib/Simulation/Road/render'
+	import { camera, restore } from '$lib/Simulation/Environment/camera'
 
 	export const fps = 60
 	export const tpf = 1000 / fps
@@ -72,21 +73,26 @@
 	}
 
 	let destroyed = false
+	let world: World
+	$: world = {
+		map,
+		dim: $controls.gridSize,
+		size: {
+			width: $controls.gridSize * 200,
+			height: $controls.gridSize * 200
+		},
+		backgroundSaved: false
+	}
+
 	const loop = (lastTime: Date) => {
 		if (destroyed) return
-		const world: World = {
-			map,
-			dim: $controls.gridSize,
-			size: {
-				width: $controls.gridSize * 100,
-				height: $controls.gridSize * 100
-			}
-		}
 		pipe(
 			$context,
 			clean({ width: $canvas.width, height: $canvas.height }),
-			city(world),
-			car(carSpots)
+			camera(world, carSpots[0]),
+			city(world, carSpots[0].box),
+			car(carSpots),
+			restore
 		)
 		frameDelay((time: Date) => {
 			logs.update((logs) => ({
@@ -114,4 +120,5 @@
 	bind:innerHeight
 />
 
+<canvas id="background-canvas" style="display: none" />
 <canvas bind:this={canvasElement} width={innerWidth} height={innerHeight} />

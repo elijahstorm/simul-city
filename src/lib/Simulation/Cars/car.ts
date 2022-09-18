@@ -3,9 +3,9 @@ import { checkControls } from '../Controls/controls'
 import { applyForce, worldWrap } from './movement'
 
 export const car = (cars: Car[]) => (env: Enviornment) =>
-	cars.forEach((car) =>
+	cars.map((car) =>
 		pipe(checkControls(), applyForce(car.box), worldWrap(env.size), draw(env.ctx, car.color))
-	)
+	)[0]
 
 const draw = (ctx: ContextProp, color: Color) => (box: HitBox) => {
 	ctx.save()

@@ -2,7 +2,7 @@
 	import { logs, controls } from '$lib/stores'
 
 	const update = (key: string) => (e: Event) => {
-		$controls[key] = e.target.value
+		$controls[key] = Number(e.target.value)
 	}
 </script>
 
@@ -37,7 +37,7 @@
 		box-shadow: 0 2px 18px 2px rgba(0, 0, 0, 0.348);
 	}
 
-	section:nth-child(3) {
+	section:nth-child(4) {
 		left: unset;
 		right: 0;
 	}

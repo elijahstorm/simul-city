@@ -36,6 +36,7 @@ type World = {
 	map: RenderConfig[]
 	dim: number
 	size: Size
+	backgroundSaved: boolean
 }
 
 type HitBox = Size & {
