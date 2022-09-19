@@ -1,21 +1,21 @@
 import { pipe } from '$lib/fp-ts'
 import { checkControls } from '../Controls/controls'
+import { sense } from '../Sensor.ts/sensor'
 import { applyForce, worldWrap } from './movement'
 
-export const car = (cars: Car[]) => (env: Enviornment) =>
-	cars.map((car) =>
-		pipe(checkControls(), applyForce(car.box), worldWrap(env.size), draw(env.ctx, car.color))
-	)[0]
+export const updateCars = (cars: Car[]) => (borders: MapBorder, size: Size) =>
+	cars.map((car) => pipe(checkControls(), applyForce(car.box), worldWrap(size), sense(borders)))[0]
 
-const draw = (ctx: ContextProp, color: Color) => (box: HitBox) => {
-	ctx.save()
-	ctx.translate(box.x, box.y)
-	ctx.rotate(box.angle)
-	ctx.beginPath()
-	ctx.fillStyle = color
-	ctx.fillRect(-box.width / 2, -box.height / 2, box.width, box.height)
-	ctx.fillStyle = 'red'
-	ctx.fillRect(-5, -box.height / 2, 10, 10)
-	ctx.restore()
-	return ctx
-}
+export const drawCars = (cars: Car[]) => (ctx: ContextProp) =>
+	cars.map((car) => {
+		ctx.save()
+		ctx.translate(car.box.x, car.box.y)
+		ctx.rotate(car.box.angle)
+		ctx.beginPath()
+		ctx.fillStyle = car.color
+		ctx.fillRect(-car.box.width / 2, -car.box.height / 2, car.box.width, car.box.height)
+		ctx.fillStyle = 'red'
+		ctx.fillRect(-5, -car.box.height / 2, 10, 10)
+		ctx.restore()
+		return ctx
+	})[0]

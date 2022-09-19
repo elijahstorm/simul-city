@@ -9,6 +9,8 @@ type ContextProp = CanvasRenderingContext2D
 
 type XYPosition = [number, number]
 
+type Wall = [XYPosition, XYPosition]
+
 type Size = {
 	width: number
 	height: number
@@ -32,8 +34,7 @@ type RenderConfig = {
 	rotate: 0 | 1 | 2 | 3
 }
 
-type World = {
-	map: RenderConfig[]
+type World = MapGeneration & {
 	dim: number
 	size: Size
 	backgroundSaved: boolean

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { pipe } from '$lib/fp-ts'
-	import { car } from '$lib/Simulation/Cars/car'
+	import { updateCars } from '$lib/Simulation/Cars/car'
 	import { ControlsConfig } from '$lib/Simulation/Controls/controls'
 	import { city, clean } from '$lib/Simulation/Environment/city'
 	import { onMount, tick } from 'svelte'
@@ -14,6 +14,7 @@
 	export const fps = 60
 	export const tpf = 1000 / fps
 
+	let canvasElement: HTMLCanvasElement
 	let innerWidth: number
 	let innerHeight: number
 
@@ -23,44 +24,14 @@
 
 		await tick()
 
-		const carWidth = (200 / LANE_AMOUNT) * 0.6
-
-		carSpots.fill(emptyBox).forEach(
-			(v, i) =>
-				(carSpots[i] = {
-					box: {
-						x: lerp(
-							0,
-							$canvas.width / $controls.gridSize,
-							(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
-						),
-						y: Math.random() * $canvas.height,
-						width: carWidth,
-						height: carWidth * 1.7,
-						angle: 0,
-						// angle: Math.random() * Math.PI,
-						physics: {
-							momentum: {
-								direction: 0,
-								magnitude: 0
-							},
-							mass: Math.random() * 5 + 5
-						}
-					},
-					color: colors[i]
-				})
-		)
-
 		die.set(false)
 
 		loop(new Date())
 	})
 
-	let map = waveCollapseGenerate(Number($controls.gridSize))
-	$: map = waveCollapseGenerate(Number($controls.gridSize))
-
+	const TILE_SIZE = 200
+	const carWidth = (TILE_SIZE / LANE_AMOUNT) * 0.6
 	const colors: Color[] = ['#0f0', '#000', '#0ff', '#f0f', '#fff']
-	const carSpots: Car[] = new Array(5)
 	const emptyBox: Car = {
 		box: {
 			x: 100,
@@ -72,26 +43,55 @@
 		color: '#000'
 	}
 
-	let destroyed = false
+	let carSpots: Car[] = []
 	let world: World
+	let destroyed = false
+	let generatedMap = waveCollapseGenerate(Number($controls.gridSize))
+
+	$: generatedMap = waveCollapseGenerate(Number($controls.gridSize))
 	$: world = {
-		map,
+		...generatedMap,
 		dim: $controls.gridSize,
 		size: {
-			width: $controls.gridSize * 200,
-			height: $controls.gridSize * 200
+			width: $controls.gridSize * TILE_SIZE,
+			height: $controls.gridSize * TILE_SIZE
 		},
 		backgroundSaved: false
 	}
+	$: carSpots = new Array($controls.carAmount).fill(emptyBox).map(
+		(v, i) =>
+			(carSpots[i] = {
+				box: {
+					x: lerp(
+						0,
+						TILE_SIZE,
+						(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
+					),
+					y: Math.random() * TILE_SIZE,
+					width: carWidth,
+					height: carWidth * 1.7,
+					angle: 0,
+					// angle: Math.random() * Math.PI,
+					physics: {
+						momentum: {
+							direction: 0,
+							magnitude: 0
+						},
+						mass: Math.random() * 5 + 5
+					}
+				},
+				color: colors[Math.floor(Math.random() * colors.length)]
+			})
+	)
 
 	const loop = (lastTime: Date) => {
 		if (destroyed) return
+		updateCars(carSpots)(world.borders, world.size)
 		pipe(
 			$context,
 			clean({ width: $canvas.width, height: $canvas.height }),
-			camera(world, carSpots[0]),
-			city(world, carSpots[0].box),
-			car(carSpots),
+			camera(carSpots[$controls.cameraFocus]),
+			city(world, carSpots[$controls.cameraFocus]?.box, carSpots),
 			restore
 		)
 		frameDelay((time: Date) => {
@@ -109,8 +109,6 @@
 	})
 
 	const frameDelay = (resolve: (time: Date) => void) => setTimeout(() => resolve(new Date()), tpf)
-
-	let canvasElement: HTMLCanvasElement
 </script>
 
 <svelte:window

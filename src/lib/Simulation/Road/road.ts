@@ -3,7 +3,7 @@ import { lerp } from '$lib/utils'
 export const roads = (world: World) => (ctx: ContextProp) => {
 	if (world.backgroundSaved) {
 		ctx.drawImage(backCanvas, 0, 0)
-		return { ctx, size: world.size }
+		return ctx
 	}
 
 	const { map, size, dim } = world
@@ -13,12 +13,12 @@ export const roads = (world: World) => (ctx: ContextProp) => {
 	backCanvas.height = world.size.height
 	if (backCanvas == null) {
 		console.error('whoa')
-		return { ctx, size }
+		return ctx
 	}
 	const backCtx = (backCanvas as HTMLCanvasElement).getContext('2d')
 	if (backCtx == null) {
 		console.error('whoa')
-		return { ctx, size }
+		return ctx
 	}
 
 	backCtx.fillStyle = 'green'
@@ -45,7 +45,7 @@ export const roads = (world: World) => (ctx: ContextProp) => {
 
 	world.backgroundSaved = true
 
-	return { ctx, size }
+	return ctx
 }
 
 let backCanvas: HTMLCanvasElement

@@ -1,5 +1,5 @@
 import { pipe } from '$lib/fp-ts'
-import { conditional } from './render'
+import { conditional, walls } from './render'
 import { initate, collapse } from './collapse'
 
 const possibilities = (grid: number): Possibilities[] =>
@@ -32,5 +32,8 @@ const reduceEntropy =
 const render = (possibilities: Connection[]): RenderConfig[] =>
 	possibilities.map((p) => conditional[p.reduce((v, c) => v + Number(c), 0)](p))
 
-export const waveCollapseGenerate: (grid: number) => RenderConfig[] = (grid) =>
-	pipe(possibilities(grid), reduceEntropy(grid), render)
+export const waveCollapseGenerate = (grid: number): MapGeneration =>
+	pipe(possibilities(grid), reduceEntropy(grid), (connections) => ({
+		map: render(connections),
+		borders: connections.reduce((p, c) => [...p, ...walls(c)], [] as MapBorder)
+	}))

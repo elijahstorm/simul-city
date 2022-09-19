@@ -1,8 +1,10 @@
-export const camera = (world: World, car: Car) => (ctx: ContextProp) => {
+export const camera = (car: Car) => (ctx: ContextProp) => {
 	ctx.save()
-	ctx.translate(-car.box.x, -car.box.y)
-	// ctx.rotate(-car.box.angle)
-	ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2)
+	if (car) {
+		ctx.translate(-car.box.x, -car.box.y)
+		// ctx.rotate(-car.box.angle)
+		ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2)
+	}
 	return ctx
 }
 

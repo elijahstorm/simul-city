@@ -5,3 +5,10 @@ type Possibilities = {
 	connections: Connection
 	index: number
 }
+
+type MapGeneration = {
+	map: RenderConfig[]
+	borders: MapBorder
+}
+
+type MapBorder = Wall[][]

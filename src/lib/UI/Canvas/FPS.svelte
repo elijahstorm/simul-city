@@ -1,15 +1,21 @@
 <script lang="ts">
-	import { logs, controls } from '$lib/stores'
+	import { logs, controls, controlsHelpers } from '$lib/stores'
 
-	const update = (key: string) => (e: Event) => {
-		$controls[key] = Number(e.target.value)
+	const update = (key: string) => (e: InputEvent) => {
+		$controls[key] =
+			controlsHelpers[key].type == 'number' ? Number(e.target?.value) : e.target?.value
 	}
 </script>
 
 <section>
 	{#each Object.keys($logs) as key}
 		<div>
-			{key}: {$logs[key]}
+			<p>
+				{key}:
+			</p>
+			<p>
+				{$logs[key]}
+			</p>
 		</div>
 	{/each}
 </section>
@@ -17,8 +23,16 @@
 <section>
 	{#each Object.keys($controls) as key}
 		<div>
-			{key}:
-			<input type="number" value={$controls[key]} min="5" max="100" on:change={update(key)} />
+			<p>
+				{key}:
+			</p>
+			<input
+				value={$controls[key]}
+				on:change={update(key)}
+				type={controlsHelpers[key].type}
+				min={controlsHelpers[key].min}
+				max={controlsHelpers[key].max}
+			/>
 		</div>
 	{/each}
 </section>
@@ -35,10 +49,22 @@
 		background-color: rgba(255, 255, 255, 0.762);
 		border-radius: 1rem;
 		box-shadow: 0 2px 18px 2px rgba(0, 0, 0, 0.348);
+		max-width: calc(50% - 7rem);
 	}
 
 	section:nth-child(4) {
 		left: unset;
 		right: 0;
+	}
+
+	div {
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+		justify-content: space-between;
+	}
+
+	input {
+		width: 3rem;
 	}
 </style>
