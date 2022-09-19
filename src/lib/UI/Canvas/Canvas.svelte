@@ -86,7 +86,7 @@
 
 	const loop = (lastTime: Date) => {
 		if (destroyed) return
-		updateCars(carSpots)(world.borders, world.size)
+		updateCars(carSpots)(world)
 		pipe(
 			$context,
 			clean({ width: $canvas.width, height: $canvas.height }),

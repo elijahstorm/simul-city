@@ -47,8 +47,7 @@ export const sense =
 	(walls: MapBorder) =>
 	(box: HitBox): Ray[] =>
 		new Array(RAY_COUNT).fill(0).map((_, i) => {
-			const angle =
-				lerp(RAY_SPREAD / 2, -RAY_SPREAD / 2, i == 0 ? 0.5 : i / (RAY_COUNT - 1)) - box.angle
+			const angle = lerp(RAY_SPREAD / 2, -RAY_SPREAD / 2, i == 0 ? 0.5 : i / RAY_COUNT) - box.angle
 			const start: XYPosition = [box.x, box.y]
 			const end: XYPosition = [
 				box.x - Math.sin(angle) * RAY_LENGTH,

@@ -32,6 +32,7 @@
 				type={controlsHelpers[key].type}
 				min={controlsHelpers[key].min}
 				max={controlsHelpers[key].max}
+				step={controlsHelpers[key].step}
 			/>
 		</div>
 	{/each}
