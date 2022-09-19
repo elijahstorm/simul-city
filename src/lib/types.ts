@@ -53,6 +53,7 @@ type HitBox = Size & {
 type Car = {
 	box: HitBox
 	color: Color
+	dead: boolean
 }
 
 type Vector = {

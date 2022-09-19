@@ -1,8 +1,8 @@
-import { controls } from '$lib/stores'
+import { config } from '$lib/stores'
 
 let cameraAngle = 0
 let CAMERA_SPEED = 0.06
-controls.subscribe(({ cameraSpeed }) => {
+config.controls.subscribe(({ cameraSpeed }) => {
 	CAMERA_SPEED = cameraSpeed
 })
 

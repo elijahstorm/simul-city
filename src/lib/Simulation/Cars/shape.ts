@@ -1,4 +1,3 @@
-import { logs } from '$lib/stores'
 import { polyIntersect } from '$lib/utils'
 import { cull } from '../Sensor.ts/collision'
 
@@ -34,11 +33,5 @@ export const collide = (borders: MapBorder) => (inputs: { box: HitBox; polygon: 
 
 	const crash = !poly.every((p) => polyIntersect(polygon, p))
 
-	logs.update((logs) => ({
-		...logs,
-		crash,
-		values: poly.length
-	}))
-
-	return box
+	return { crash, box }
 }

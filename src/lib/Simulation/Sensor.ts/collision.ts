@@ -1,10 +1,12 @@
-import { controls } from '$lib/stores'
+import { config } from '$lib/stores'
 
 let RAY_LENGTH = 100
 let GRID_SIZE = 5
 
-controls.subscribe(({ sensorLength, gridSize }) => {
+config.controls.subscribe(({ sensorLength }) => {
 	RAY_LENGTH = sensorLength
+})
+config.master.subscribe(({ gridSize }) => {
 	GRID_SIZE = gridSize
 })
 

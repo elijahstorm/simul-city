@@ -1,9 +1,9 @@
 import { pipe } from '$lib/fp-ts'
-import { controls } from '$lib/stores'
+import { config } from '$lib/stores'
 
 let FRICTION = 0.04
 let MAX_SPEED = 5
-controls.subscribe(({ friction, maxSpeed }) => {
+config.controls.subscribe(({ friction, maxSpeed }) => {
 	FRICTION = friction
 	MAX_SPEED = maxSpeed
 })

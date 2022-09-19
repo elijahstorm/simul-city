@@ -4,15 +4,19 @@
 	import { ControlsConfig } from '$lib/Simulation/Controls/controls'
 	import { city, clean } from '$lib/Simulation/Environment/city'
 	import { onMount, tick } from 'svelte'
-	import { canvas, context, die, logs, controls } from '$lib/stores'
+	import { canvas, context, die, logs, config } from '$lib/stores'
 	import { onDestroy } from 'svelte'
 	import { lerp } from '$lib/utils'
 	import { waveCollapseGenerate } from '$lib/Simulation/Road/generate'
 	import { LANE_AMOUNT } from '$lib/Simulation/Road/render'
 	import { camera, restore } from '$lib/Simulation/Environment/camera'
+	import { removeDead } from '$lib/Simulation/Ai/death'
+	import { ai } from '$lib/Simulation/Ai/run'
 
 	export const fps = 60
 	export const tpf = 1000 / fps
+
+	const { master, controls } = config
 
 	let canvasElement: HTMLCanvasElement
 	let innerWidth: number
@@ -40,25 +44,26 @@
 			height: 55,
 			angle: 0
 		},
-		color: '#000'
+		color: '#000',
+		dead: true
 	}
 
 	let carSpots: Car[] = []
 	let world: World
 	let destroyed = false
-	let generatedMap = waveCollapseGenerate(Number($controls.gridSize))
+	let generatedMap = waveCollapseGenerate(Number($master.gridSize))
 
-	$: generatedMap = waveCollapseGenerate(Number($controls.gridSize))
+	$: generatedMap = waveCollapseGenerate(Number($master.gridSize))
 	$: world = {
 		...generatedMap,
-		dim: $controls.gridSize,
+		dim: $master.gridSize,
 		size: {
-			width: $controls.gridSize * TILE_SIZE,
-			height: $controls.gridSize * TILE_SIZE
+			width: $master.gridSize * TILE_SIZE,
+			height: $master.gridSize * TILE_SIZE
 		},
 		backgroundSaved: false
 	}
-	$: carSpots = new Array($controls.carAmount).fill(emptyBox).map(
+	$: carSpots = new Array($master.carAmount).fill(emptyBox).map(
 		(v, i) =>
 			(carSpots[i] = {
 				box: {
@@ -80,13 +85,20 @@
 						mass: Math.random() * 5 + 5
 					}
 				},
-				color: colors[Math.floor(Math.random() * colors.length)]
+				color: colors[Math.floor(Math.random() * colors.length)],
+				dead: false
 			})
 	)
 
 	const loop = (lastTime: Date) => {
 		if (destroyed) return
-		updateCars(carSpots)(world)
+		if (pipe(updateCars(carSpots)(world), removeDead(carSpots), ai).every((car) => car == null)) {
+			setTimeout(
+				() => master.update((master) => ({ ...master, carAmount: master.carAmount + 1 })),
+				1000
+			)
+			return
+		}
 		pipe(
 			$context,
 			clean({ width: $canvas.width, height: $canvas.height }),

@@ -1,4 +1,4 @@
-import { controls } from '$lib/stores'
+import { config } from '$lib/stores'
 
 export const ControlsConfig = {
 	onkeydown: (e: KeyboardEvent) => {
@@ -26,7 +26,7 @@ const nuturalStart: CarActions = {
 let THRUST_MAGNITUDE = 3
 let BREAK_MAGNITUDE = 0.1
 let ANGLE = (0.5 * Math.PI) / 180
-controls.subscribe(({ carThrust, carTurnSpeed, carBreakStrength }) => {
+config.controls.subscribe(({ carThrust, carTurnSpeed, carBreakStrength }) => {
 	THRUST_MAGNITUDE = carThrust
 	BREAK_MAGNITUDE = carBreakStrength
 	ANGLE = (carTurnSpeed * Math.PI) / 180

@@ -6,24 +6,32 @@ import { applyForce, worldWrap } from './movement'
 
 export const updateCars = (cars: Car[]) => (world: World) =>
 	cars.map((car) =>
-		pipe(
-			checkControls(),
-			applyForce(car.box),
-			worldWrap(world.size),
-			polygon,
-			collide(world.borders),
-			sense(world.borders)
-		)
-	)[0]
+		car.dead
+			? null
+			: pipe(
+					checkControls(),
+					applyForce(car.box),
+					worldWrap(world.size),
+					polygon,
+					collide(world.borders),
+					kill(car),
+					sense(world.borders)
+			  )
+	)
 
 export const drawCars = (cars: Car[]) => (ctx: ContextProp) =>
 	cars.map((car) => {
 		const poly = polygon(car.box).polygon
 
 		ctx.beginPath()
-		ctx.fillStyle = car.color
+		ctx.fillStyle = car.dead ? 'red' : car.color
 		poly.forEach((p, i) => (i == 0 ? ctx.moveTo(...p) : ctx.lineTo(...p)))
 		ctx.fill()
 
 		return ctx
 	})[0]
+
+const kill = (car: Car) => (input: { crash: boolean; box: HitBox }) => {
+	car.dead = input.crash
+	return input.box
+}

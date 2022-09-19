@@ -1,5 +1,5 @@
 import { pipe } from '$lib/fp-ts'
-import { context, controls } from '$lib/stores'
+import { context, config } from '$lib/stores'
 import { lerp, intersection } from '$lib/utils'
 import { visable } from './collision'
 
@@ -10,7 +10,7 @@ let ctx: ContextProp
 
 context.update((context) => (ctx = context))
 
-controls.subscribe(({ sensorCount, sensorLength, sensorSpread, gridSize }) => {
+config.controls.subscribe(({ sensorCount, sensorLength, sensorSpread }) => {
 	RAY_COUNT = sensorCount
 	RAY_LENGTH = sensorLength
 	RAY_SPREAD = sensorSpread

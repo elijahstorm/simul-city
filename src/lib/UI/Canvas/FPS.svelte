@@ -1,10 +1,19 @@
 <script lang="ts">
-	import { logs, controls, controlsHelpers } from '$lib/stores'
+	import { logs, config, controlsHelpers } from '$lib/stores'
 
-	const update = (key: string) => (e: InputEvent) => {
-		$controls[key] =
-			controlsHelpers[key].type == 'number' ? Number(e.target?.value) : e.target?.value
+	const { master, controls } = config
+
+	type Key = keyof typeof controlsHelpers
+
+	const update = (key: Key) => (e: Event) => {
+		const what = controlsHelpers[key].type == 'number' ? Number(e.target?.value) : e.target?.value
+		if (controlsHelpers[key].where == 'master') {
+			$master[key] = what
+		}
+		$controls[key] = what
 	}
+
+	const keys: Key[] = Object.keys(controlsHelpers)
 </script>
 
 <section>
@@ -21,18 +30,15 @@
 </section>
 
 <section>
-	{#each Object.keys($controls) as key}
+	{#each keys as key}
 		<div>
 			<p>
 				{key}:
 			</p>
 			<input
-				value={$controls[key]}
+				value={controlsHelpers[key].where == 'master' ? $master[key] : $controls[key]}
 				on:change={update(key)}
-				type={controlsHelpers[key].type}
-				min={controlsHelpers[key].min}
-				max={controlsHelpers[key].max}
-				step={controlsHelpers[key].step}
+				{...controlsHelpers[key]}
 			/>
 		</div>
 	{/each}
