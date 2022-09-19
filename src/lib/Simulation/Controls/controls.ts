@@ -1,3 +1,5 @@
+import { controls } from '$lib/stores'
+
 export const ControlsConfig = {
 	onkeydown: (e: KeyboardEvent) => {
 		e.preventDefault()
@@ -20,9 +22,15 @@ const nuturalStart: CarActions = {
 	breaks: 0,
 	angle: 0
 }
-const THRUST_MAGNITUDE = 3
-const BREAK_MAGNITUDE = 0.1
-const ANGLE = (1 * Math.PI) / 180
+
+let THRUST_MAGNITUDE = 3
+let BREAK_MAGNITUDE = 0.1
+let ANGLE = (0.5 * Math.PI) / 180
+controls.subscribe(({ carThrust, carTurnSpeed, carBreakStrength }) => {
+	THRUST_MAGNITUDE = carThrust
+	BREAK_MAGNITUDE = carBreakStrength
+	ANGLE = (carTurnSpeed * Math.PI) / 180
+})
 
 type MovementAction = (actions: CarActions) => void
 

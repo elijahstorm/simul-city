@@ -1,5 +1,3 @@
-import type { boolean } from 'fp-ts'
-
 export const lerp = (A: number, B: number, t: number) => A + (B - A) * t
 
 export const intersection = (
@@ -28,14 +26,14 @@ export const intersection = (
 }
 
 export const polyIntersect = (poly1: Polygon, poly2: Polygon) =>
-	poly1.reduce(
-		(v1, point1, i1) =>
-			v1 ||
-			poly2.reduce(
-				(v2, point2, i2) =>
-					v2 ||
-					intersection(point1, poly1[i1 % poly1.length], point2, poly2[i2 % poly2.length]) == null,
-				false
-			),
-		false
+	poly1.every((point1, i1) =>
+		poly2.every(
+			(point2, i2) =>
+				intersection(
+					point1,
+					poly1[(i1 + 1) % poly1.length],
+					point2,
+					poly2[(i2 + 1) % poly2.length]
+				) == null
+		)
 	)

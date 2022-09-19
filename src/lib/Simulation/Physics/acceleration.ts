@@ -1,7 +1,12 @@
 import { pipe } from '$lib/fp-ts'
+import { controls } from '$lib/stores'
 
-const FRICTION = 0.04
-const MAX_SPEED = 5
+let FRICTION = 0.04
+let MAX_SPEED = 5
+controls.subscribe(({ friction, maxSpeed }) => {
+	FRICTION = friction
+	MAX_SPEED = maxSpeed
+})
 
 export const accelerate = (actions: CarActions) => (box: HitBox) => pipe(actions, apply(box))
 

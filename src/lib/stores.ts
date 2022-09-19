@@ -12,7 +12,12 @@ export const controls = writable({
 	sensorCount: 5,
 	sensorLength: 100,
 	sensorSpread: Math.PI / 4,
-	cameraSpeed: 0.06
+	cameraSpeed: 0.06,
+	carThrust: 3,
+	carTurnSpeed: 0.7,
+	carBreakStrength: 0.1,
+	maxSpeed: 5,
+	friction: 0.04
 })
 
 export const controlsHelpers = {
@@ -57,6 +62,36 @@ export const controlsHelpers = {
 		min: 0,
 		max: 0.15,
 		step: 0.001
+	},
+	carThrust: {
+		type: 'number',
+		min: 1,
+		max: 15,
+		step: 1
+	},
+	carTurnSpeed: {
+		type: 'number',
+		min: 0.3,
+		max: 1.5,
+		step: 0.1
+	},
+	carBreakStrength: {
+		type: 'number',
+		min: 0.05,
+		max: 0.3,
+		step: 0.05
+	},
+	friction: {
+		type: 'number',
+		min: 0.01,
+		max: 1,
+		step: 0.01
+	},
+	maxSpeed: {
+		type: 'number',
+		min: 3,
+		max: 20,
+		step: 1
 	}
 }
 
