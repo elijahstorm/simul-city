@@ -92,29 +92,14 @@
 
 	const loop = (lastTime: Date) => {
 		if (destroyed) return
-		if (
-			pipe(
-				carSpots,
-				updateCars(world),
-				removeDead,
-				sensors(world.borders),
-				ai,
-				controlCars(world)
-			).every((car) => car == null)
-		) {
+		if (runPhysics()) {
 			setTimeout(
 				() => master.update((master) => ({ ...master, carAmount: master.carAmount + 1 })),
 				1000
 			)
 			return
 		}
-		pipe(
-			$context,
-			clean({ width: $canvas.width, height: $canvas.height }),
-			camera(carSpots[$controls.cameraFocus]),
-			city(world, carSpots[$controls.cameraFocus]?.box, carSpots),
-			restore
-		)
+		renderCamera()
 		frameDelay((time: Date) => {
 			logs.update((logs) => ({
 				...logs,
@@ -123,6 +108,25 @@
 			loop(time)
 		})
 	}
+
+	const runPhysics = () =>
+		pipe(
+			carSpots,
+			updateCars(world),
+			removeDead,
+			sensors(world.borders),
+			ai([$controls.sensorCount, 6, 4]), // ...master.network, 4]),
+			controlCars(world)
+		).every((car) => car == null)
+
+	const renderCamera = () =>
+		pipe(
+			$context,
+			clean({ width: $canvas.width, height: $canvas.height }),
+			camera(carSpots[$controls.cameraFocus]),
+			city(world, carSpots[$controls.cameraFocus]?.box, carSpots),
+			restore
+		)
 
 	onDestroy(() => {
 		destroyed = true
