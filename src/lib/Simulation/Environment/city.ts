@@ -1,5 +1,6 @@
 import { pipe } from '$lib/fp-ts'
 import { drawCars } from '../Cars/car'
+import { combine } from '../Cars/shape'
 import { roads } from '../Road/road'
 import { drawSensors } from '../Sensor.ts/sensor'
 
@@ -36,7 +37,7 @@ const tile = (world: World, wrap: DisplayWrap, cars: Car[]) => {
 			roads(world),
 			drawCars(cars),
 			drawSensors(
-				world.borders,
+				combine(cars[0], world.borders, cars),
 				cars.map((c) => c.box)
 			)
 		)

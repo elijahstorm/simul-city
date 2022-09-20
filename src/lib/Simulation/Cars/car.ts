@@ -1,23 +1,18 @@
 import { pipe } from '$lib/fp-ts'
-import { polygon, collide } from './shape'
-import { checkControls } from '../Controls/controls'
-import { sense } from '../Sensor.ts/sensor'
+import { polygon, collide, combine } from './shape'
 import { applyForce, worldWrap } from './movement'
+import { sense } from '../Sensor.ts/sensor'
 
-export const updateCars = (cars: Car[]) => (world: World) =>
-	cars.map((car) =>
-		car.dead
-			? null
-			: pipe(
-					checkControls(),
-					applyForce(car.box),
-					worldWrap(world.size),
-					polygon,
-					collide(world.borders),
-					kill(car),
-					sense(world.borders)
-			  )
-	)
+export const updateCars = (world: World) => (cars: Car[]) =>
+	cars.map((car) => pipe(car.box, polygon, collide(combine(car, world.borders, cars)), kill(car)))
+
+export const sensors =
+	(walls: MapBorder) =>
+	(cars: Car[]): NetworkInputs =>
+		cars.map((car) => ({ car, sensor: sense(combine(car, walls, cars))(car.box) }))
+
+export const controlCars = (world: World) => (actions: NetworkActions) =>
+	actions.map(({ car, action }) => pipe(action, applyForce(car.box), worldWrap(world.size)))
 
 export const drawCars = (cars: Car[]) => (ctx: ContextProp) =>
 	cars.map((car) => {
@@ -31,7 +26,7 @@ export const drawCars = (cars: Car[]) => (ctx: ContextProp) =>
 		return ctx
 	})[0]
 
-const kill = (car: Car) => (input: { crash: boolean; box: HitBox }) => {
-	car.dead = input.crash
-	return input.box
+const kill = (car: Car) => (crash: boolean) => {
+	car.dead = crash
+	return car
 }

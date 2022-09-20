@@ -26,12 +26,16 @@ export const polygon = (box: HitBox) => {
 	return { box, polygon }
 }
 
-export const collide = (borders: MapBorder) => (inputs: { box: HitBox; polygon: Polygon }) => {
+export const collide = (obstacle: Obstacle) => (inputs: { box: HitBox; polygon: Polygon }) => {
 	const { box, polygon } = inputs
 
-	const poly = cull(box, borders)
+	const poly = cull(box, obstacle)
 
 	const crash = !poly.every((p) => polyIntersect(polygon, p))
 
-	return { crash, box }
+	return crash
+}
+
+export const combine = (car: Car, borders: MapBorder, cars: Car[]) => {
+	return { borders, polygons: cars.map((c) => (c == car ? [] : polygon(c.box).polygon)) }
 }

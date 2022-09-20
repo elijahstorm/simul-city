@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { pipe } from '$lib/fp-ts'
-	import { updateCars } from '$lib/Simulation/Cars/car'
+	import { controlCars, sensors, updateCars } from '$lib/Simulation/Cars/car'
 	import { ControlsConfig } from '$lib/Simulation/Controls/controls'
 	import { city, clean } from '$lib/Simulation/Environment/city'
 	import { onMount, tick } from 'svelte'
@@ -92,7 +92,16 @@
 
 	const loop = (lastTime: Date) => {
 		if (destroyed) return
-		if (pipe(updateCars(carSpots)(world), removeDead(carSpots), ai).every((car) => car == null)) {
+		if (
+			pipe(
+				carSpots,
+				updateCars(world),
+				removeDead,
+				sensors(world.borders),
+				ai,
+				controlCars(world)
+			).every((car) => car == null)
+		) {
 			setTimeout(
 				() => master.update((master) => ({ ...master, carAmount: master.carAmount + 1 })),
 				1000

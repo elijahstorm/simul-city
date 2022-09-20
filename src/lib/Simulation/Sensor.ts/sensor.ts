@@ -17,24 +17,27 @@ config.controls.subscribe(({ sensorCount, sensorLength, sensorSpread }) => {
 })
 
 export const sense =
-	(walls: MapBorder) =>
+	(obstacle: Obstacle) =>
 	(box: HitBox): Ray[] =>
-		new Array(RAY_COUNT).fill(0).map((_, i) => {
-			const angle = lerp(RAY_SPREAD / 2, -RAY_SPREAD / 2, i == 0 ? 0.5 : i / RAY_COUNT) - box.angle
-			const start: XYPosition = [box.x, box.y]
-			const end: XYPosition = [
-				box.x - Math.sin(angle) * RAY_LENGTH,
-				box.y - Math.cos(angle) * RAY_LENGTH
-			]
-			const contacts = visable(box, walls)
-				.map((wall) => intersection(start, end, ...wall))
-				.filter((intersection) => intersection != null) as Intersection[]
-			contacts.sort((a, b) => a.offset - b.offset)
-			return { start, end, contacts }
-		})
+		pipe(visable(box, obstacle), (visable) =>
+			new Array(RAY_COUNT).fill(0).map((_, i) => {
+				const angle =
+					lerp(RAY_SPREAD / 2, -RAY_SPREAD / 2, i == 0 ? 0.5 : i / RAY_COUNT) - box.angle
+				const start: XYPosition = [box.x, box.y]
+				const end: XYPosition = [
+					box.x - Math.sin(angle) * RAY_LENGTH,
+					box.y - Math.cos(angle) * RAY_LENGTH
+				]
+				const contacts = visable
+					.map((wall) => intersection(start, end, ...wall))
+					.filter((intersection) => intersection != null) as Intersection[]
+				contacts.sort((a, b) => a.offset - b.offset)
+				return { start, end, contacts }
+			})
+		)
 
-export const drawSensors = (walls: MapBorder, boxs: HitBox[]) => (ctx: ContextProp) =>
-	boxs.map((box) => pipe(box, sense(walls), draw(ctx)))[0]
+export const drawSensors = (obstacle: Obstacle, boxs: HitBox[]) => (ctx: ContextProp) =>
+	boxs.map((box) => pipe(box, sense(obstacle), draw(ctx)))[0]
 
 const draw = (ctx: ContextProp) => (rays: Ray[]) =>
 	rays.map((ray) => {

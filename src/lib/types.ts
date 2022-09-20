@@ -50,19 +50,7 @@ type HitBox = Size & {
 	}
 }
 
-type Car = {
-	box: HitBox
-	color: Color
-	dead: boolean
-}
-
 type Vector = {
 	direction: number
 	magnitude: number
-}
-
-type CarActions = {
-	thrust: number
-	breaks: number
-	angle: number
 }

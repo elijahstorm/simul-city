@@ -5,8 +5,7 @@ config.controls.subscribe(({ cameraFocus }) => {
 	camera = cameraFocus
 })
 
-export const removeDead = (cars: Car[]) => (inputs: (Ray[] | null)[]) => {
-	const rays = inputs.filter((r, i) => !cars[i].dead) as Ray[][]
+export const removeDead = (cars: Car[]) => {
 	if (cars[camera].dead) {
 		config.controls.update((crtls) => ({
 			...crtls,
@@ -16,5 +15,5 @@ export const removeDead = (cars: Car[]) => (inputs: (Ray[] | null)[]) => {
 			)
 		}))
 	}
-	return rays
+	return cars.filter((c, i) => !cars[i].dead) as Car[]
 }
