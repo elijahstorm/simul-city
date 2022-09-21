@@ -127,7 +127,7 @@
 			updateCars(world),
 			removeDead,
 			sensors(world.borders),
-			ai([$controls.sensorCount, 6, 4]), // ...master.network, 4]),
+			ai([$controls.sensorCount, 6, 5]), // ai([$controls.sensorCount, ...master.network, 5]),
 			controlCars(world)
 		).every((car) => car == null)
 

@@ -1,4 +1,4 @@
-import { config, logs } from '$lib/stores'
+import { config } from '$lib/stores'
 import { checkControls } from '../Controls/controls'
 import { create, prediction } from './network'
 
@@ -12,16 +12,16 @@ config.controls.subscribe(({ carThrust, carTurnSpeed, carBreakStrength }) => {
 })
 
 export const ai = (layers: number[]) => (cars: NetworkInputs) =>
-	cars.map(({ car, sensor }) => ({ car, action: checkControls() }))
-// cars.map(({ car, sensor }) => ({ car, action: convert(layers, sensor) }))
+	// cars.map(({ car, sensor }) => ({ car, action: checkControls() }))
+	cars.map(({ car, sensor }) => ({ car, action: convert(layers, sensor) }))
 
 const convert = (layers: number[], sensor: Ray[]): CarActions => {
-	const [thrust, left, right, breaking] = prediction(
+	const [thrust, left, right, breaking, reverse] = prediction(
 		sensor.map((s) => 1 - (s.contacts[0]?.offset ?? 1))
 	)(create(layers))
 
 	return {
-		thrust: THRUST_MAGNITUDE * thrust,
+		thrust: THRUST_MAGNITUDE * thrust * (reverse > 0.5 ? -1 : 1),
 		angle: ANGLE * -left + ANGLE * right,
 		breaks: BREAK_MAGNITUDE * breaking
 	}

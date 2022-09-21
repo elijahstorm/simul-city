@@ -30,9 +30,13 @@ const layer = (inputCount: number, outputCount: number): Layer => {
 }
 
 const feed = (inputs: LayerNode[], layer: Layer) =>
-	layer.outputs.map((node, i) => {
-		const out = inputs.reduce((sum, value, j) => sum + value * layer.weights[j][i], 0)
-		return out + layer.biases[i] > 0 ? 1 : 0
-	})
+	layer.outputs.map((_, i) =>
+		inputs.reduce((sum, value, j) => sum + scale(value * layer.weights[j][i]), 0) +
+			layer.biases[i] >
+		0
+			? 1
+			: 0
+	)
 
-// const scale = (node: LayerNode) =>
+// todo: add scale function
+const scale = (node: LayerNode) => node
