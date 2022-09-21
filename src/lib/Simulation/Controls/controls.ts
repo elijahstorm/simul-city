@@ -41,18 +41,12 @@ const Controls: {
 const Actions: {
 	[key: string]: MovementAction
 } = {
-	ArrowUp: (actions) => {
-		actions.thrust = THRUST_MAGNITUDE
-	},
-	ArrowDown: (actions) => {
-		actions.breaks = BREAK_MAGNITUDE
-	},
-	ArrowLeft: (actions) => {
-		actions.angle = -ANGLE
-	},
-	ArrowRight: (actions) => {
-		actions.angle = ANGLE
-	}
+	ArrowUp: (actions) => (actions.thrust = THRUST_MAGNITUDE),
+	ArrowDown: (actions) => (actions.thrust = -THRUST_MAGNITUDE),
+	ArrowLeft: (actions) => (actions.angle = -ANGLE),
+	ArrowRight: (actions) => (actions.angle = ANGLE),
+	Shift: (actions) => (actions.breaks = BREAK_MAGNITUDE),
+	Space: (actions) => (actions.breaks = BREAK_MAGNITUDE)
 }
 
 const empty: MovementAction = (p) => {}

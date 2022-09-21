@@ -12,6 +12,7 @@
 	import { camera, restore } from '$lib/Simulation/Environment/camera'
 	import { removeDead } from '$lib/Simulation/Ai/death'
 	import { ai } from '$lib/Simulation/Ai/run'
+	import { map } from 'fp-ts/lib/Functor'
 
 	export const fps = 60
 	export const tpf = 1000 / fps
@@ -63,40 +64,51 @@
 		},
 		backgroundSaved: false
 	}
-	$: carSpots = new Array($master.carAmount).fill(emptyBox).map(
-		(v, i) =>
-			(carSpots[i] = {
-				box: {
-					x: lerp(
+	$: carSpots = new Array($master.carAmount).fill(emptyBox).map((v, i) => {
+		const gridSize = Number($master.gridSize)
+		const tileX = Math.floor(Math.random() * gridSize)
+		const tileY = Math.floor(Math.random() * gridSize)
+
+		const tile = generatedMap.map[tileX + tileY * gridSize]
+
+		const angle = tile.rotate == 1 ? Math.PI / 2 : 0
+
+		return {
+			box: {
+				x:
+					tileX * TILE_SIZE +
+					lerp(
 						0,
 						TILE_SIZE,
 						(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
 					),
-					y: Math.random() * TILE_SIZE,
-					width: carWidth,
-					height: carWidth * 1.7,
-					angle: 0,
-					// angle: Math.random() * Math.PI,
-					physics: {
-						momentum: {
-							direction: 0,
-							magnitude: 0
-						},
-						mass: Math.random() * 5 + 5
-					}
-				},
-				color: colors[Math.floor(Math.random() * colors.length)],
-				dead: false
-			})
-	)
+				y:
+					tileY * TILE_SIZE +
+					lerp(
+						0,
+						TILE_SIZE,
+						(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
+					),
+				width: carWidth,
+				height: carWidth * 1.7,
+				angle,
+				physics: {
+					momentum: {
+						direction: 0,
+						magnitude: 0
+					},
+					mass: Math.random() * 5 + 5
+				}
+			},
+			color: colors[Math.floor(Math.random() * colors.length)],
+			dead: false
+		}
+	})
 
 	const loop = (lastTime: Date) => {
 		if (destroyed) return
 		if (runPhysics()) {
-			setTimeout(
-				() => master.update((master) => ({ ...master, carAmount: master.carAmount + 1 })),
-				1000
-			)
+			setTimeout(() => master.update((master) => ({ ...master })), 1000)
 			return
 		}
 		renderCamera()

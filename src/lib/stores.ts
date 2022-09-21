@@ -16,10 +16,10 @@ export const config = {
 		sensorLength: 100,
 		sensorSpread: Math.PI / 4,
 		cameraSpeed: 0.06,
-		carThrust: 3,
+		carThrust: 2,
+		maxSpeed: 8,
 		carTurnSpeed: 0.7,
-		carBreakStrength: 0.1,
-		maxSpeed: 5,
+		carBreakStrength: 0.4,
 		friction: 0.04
 	})
 }
