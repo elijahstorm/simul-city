@@ -1,6 +1,6 @@
 import { pipe } from '$lib/fp-ts'
+import { config, logs } from '$lib/stores'
 import { drawCars } from '../Cars/car'
-import { combine } from '../Cars/shape'
 import { roads } from '../Road/road'
 import { drawSensors } from '../Sensor.ts/sensor'
 
@@ -19,16 +19,54 @@ const wrapDirections: DisplayWrap = [
 	[1, 1]
 ]
 
-export const city = (world: World, camera: HitBox, cars: Car[]) =>
+export const city = (world: World, camera: HitBox, cars: Car[], dim: Size) =>
 	tile(
 		world,
 		wrapDirections.filter((direction) => {
 			const { x, y } = camera
-			// todo, dont render unneeded stuff
+			const { width, height } = dim
+			logs.update((logs) => ({
+				...logs,
+				x,
+				y,
+				width,
+				height,
+				worldWidth: world.size.width,
+				worldHeight: world.size.height,
+				direction
+			}))
+
 			return true
+
+			if (direction[1] == -1) {
+				if (y < height / 2) {
+					return true
+				}
+			} else if (direction[1] == 1) {
+				if (world.size.height - y > height / 2) {
+					return true
+				}
+			}
+
+			if (direction[0] == -1) {
+				if (x < width / 2) {
+					return true
+				}
+			} else if (direction[0] == 1) {
+				if (world.size.width - x > width / 2) {
+					return true
+				}
+			}
+
+			return false
 		}),
 		cars
 	)
+
+let DRAW_SENSORS = false
+config.controls.subscribe(({ drawSensors }) => {
+	DRAW_SENSORS = drawSensors
+})
 
 const tile = (world: World, wrap: DisplayWrap, cars: Car[]) => {
 	const draw = (ctx: ContextProp) =>
@@ -36,11 +74,13 @@ const tile = (world: World, wrap: DisplayWrap, cars: Car[]) => {
 			ctx,
 			roads(world),
 			drawCars(cars),
-			drawSensors(
-				combine(cars[0], world.borders, cars),
-				cars.map((c) => c.box)
-			)
+			DRAW_SENSORS ? drawSensors(cars, world.borders) : (c) => c
 		)
+
+	logs.update((logs) => ({
+		...logs,
+		amount: wrap.reduce((a, v) => a + (v ? 1 : 0), 0)
+	}))
 
 	return (ctx: ContextProp) => {
 		wrap.forEach((dir) => {

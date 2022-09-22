@@ -6,11 +6,18 @@
 	type Key = keyof typeof controlsHelpers
 
 	const update = (key: Key) => (e: Event) => {
-		const what = controlsHelpers[key].type == 'number' ? Number(e.target?.value) : e.target?.value
+		const type = controlsHelpers[key].type
+		const what =
+			type == 'number'
+				? Number(e.target?.value)
+				: type === 'checkbox'
+				? e.target?.checked
+				: e.target?.value
 		if (controlsHelpers[key].where == 'master') {
 			$master[key] = what
+		} else {
+			$controls[key] = what
 		}
-		$controls[key] = what
 	}
 
 	const keys: Key[] = Object.keys(controlsHelpers)
@@ -37,6 +44,7 @@
 			</p>
 			<input
 				value={controlsHelpers[key].where == 'master' ? $master[key] : $controls[key]}
+				checked={controlsHelpers[key].where == 'toggles' ? $controls[key] : null}
 				on:change={update(key)}
 				{...controlsHelpers[key]}
 			/>

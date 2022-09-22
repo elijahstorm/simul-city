@@ -90,7 +90,7 @@
 						(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
 					),
 				width: carWidth,
-				height: carWidth * 1.7,
+				height: carWidth * 1.6,
 				angle,
 				physics: {
 					momentum: {
@@ -136,7 +136,10 @@
 			$context,
 			clean({ width: $canvas.width, height: $canvas.height }),
 			camera(carSpots[$controls.cameraFocus]),
-			city(world, carSpots[$controls.cameraFocus]?.box, carSpots),
+			city(world, carSpots[$controls.cameraFocus]?.box, carSpots, {
+				width: $canvas.width,
+				height: $canvas.height
+			}),
 			restore
 		)
 

@@ -13,12 +13,14 @@ export const config = {
 	controls: writable({
 		cameraFocus: 0,
 		sensorCount: 5,
+		playerControls: false,
+		drawSensors: false,
 		sensorLength: 100,
-		sensorSpread: Math.PI / 4,
+		sensorSpread: Math.PI / 2,
 		cameraSpeed: 0.06,
 		carThrust: 2,
 		maxSpeed: 8,
-		carTurnSpeed: 0.7,
+		carTurnSpeed: 0.5,
 		carBreakStrength: 0.4,
 		friction: 0.04
 	})
@@ -28,7 +30,7 @@ export const controlsHelpers = {
 	gridSize: {
 		type: 'number',
 		where: 'master',
-		min: 5,
+		min: 2,
 		max: 100,
 		step: 1
 	},
@@ -45,6 +47,14 @@ export const controlsHelpers = {
 		min: 0,
 		max: 5,
 		step: 1
+	},
+	playerControls: {
+		type: 'checkbox',
+		where: 'toggles'
+	},
+	drawSensors: {
+		type: 'checkbox',
+		where: 'toggles'
 	},
 	sensorCount: {
 		type: 'number',

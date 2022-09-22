@@ -37,5 +37,5 @@ export const collide = (obstacle: Obstacle) => (inputs: { box: HitBox; polygon: 
 }
 
 export const combine = (car: Car, borders: MapBorder, cars: Car[]) => {
-	return { borders, polygons: cars.map((c) => (c == car ? [] : polygon(c.box).polygon)) }
+	return { borders, polygons: cars.map((c) => (c === car ? [] : polygon(c.box).polygon)) }
 }

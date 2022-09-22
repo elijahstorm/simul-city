@@ -1,6 +1,7 @@
 import { pipe } from '$lib/fp-ts'
 import { context, config } from '$lib/stores'
 import { lerp, intersection } from '$lib/utils'
+import { combine } from '../Cars/shape'
 import { visable } from './collision'
 
 let RAY_COUNT = 3
@@ -36,8 +37,8 @@ export const sense =
 			})
 		)
 
-export const drawSensors = (obstacle: Obstacle, boxs: HitBox[]) => (ctx: ContextProp) =>
-	boxs.map((box) => pipe(box, sense(obstacle), draw(ctx)))[0]
+export const drawSensors = (cars: Car[], borders: MapBorder) => (ctx: ContextProp) =>
+	cars.map((car) => pipe(car.box, sense(combine(car, borders, cars)), draw(ctx)))[0]
 
 const draw = (ctx: ContextProp) => (rays: Ray[]) =>
 	rays.map((ray) => {

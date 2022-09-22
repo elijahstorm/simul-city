@@ -9,7 +9,7 @@ export const updateCars = (world: World) => (cars: Car[]) =>
 export const sensors =
 	(walls: MapBorder) =>
 	(cars: Car[]): NetworkInputs =>
-		cars.map((car) => ({ car, sensor: sense(combine(car, walls, cars))(car.box) }))
+		cars.map((car) => ({ car, sensor: pipe(car.box, sense(combine(car, walls, cars))) }))
 
 export const controlCars = (world: World) => (actions: NetworkActions) =>
 	actions.map(({ car, action }) => pipe(action, applyForce(car.box), worldWrap(world.size)))

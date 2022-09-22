@@ -5,15 +5,18 @@ import { create, prediction } from './network'
 let THRUST_MAGNITUDE = 3
 let BREAK_MAGNITUDE = 0.1
 let ANGLE = (0.5 * Math.PI) / 180
-config.controls.subscribe(({ carThrust, carTurnSpeed, carBreakStrength }) => {
+let PLAYER_CONTROLS = false
+config.controls.subscribe(({ carThrust, carTurnSpeed, carBreakStrength, playerControls }) => {
+	PLAYER_CONTROLS = playerControls
 	THRUST_MAGNITUDE = carThrust
 	BREAK_MAGNITUDE = carBreakStrength
 	ANGLE = (carTurnSpeed * Math.PI) / 180
 })
 
 export const ai = (layers: number[]) => (cars: NetworkInputs) =>
-	// cars.map(({ car, sensor }) => ({ car, action: checkControls() }))
-	cars.map(({ car, sensor }) => ({ car, action: convert(layers, sensor) }))
+	PLAYER_CONTROLS
+		? cars.map(({ car, sensor }) => ({ car, action: checkControls() }))
+		: cars.map(({ car, sensor }) => ({ car, action: convert(layers, sensor) }))
 
 const convert = (layers: number[], sensor: Ray[]): CarActions => {
 	const [thrust, left, right, breaking, reverse] = prediction(

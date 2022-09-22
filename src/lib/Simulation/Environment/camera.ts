@@ -13,7 +13,6 @@ export const camera = (car: Car) => (ctx: ContextProp) => {
 		cameraAngle += diff * CAMERA_SPEED
 
 		ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2)
-		// ctx.rotate(-car.box.angle)
 		ctx.rotate(-cameraAngle)
 		ctx.translate(-car.box.x, -car.box.y)
 	}
