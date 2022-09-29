@@ -4,9 +4,9 @@
 	import { ControlsConfig } from '$lib/Simulation/Controls/controls'
 	import { city, clean } from '$lib/Simulation/Environment/city'
 	import { onMount } from 'svelte'
-	import { canvas, context, die, logs, config } from '$lib/stores'
+	import { canvas, context, die, logs, config, mounted } from '$lib/stores'
 	import { onDestroy } from 'svelte'
-	import { lerp, split } from '$lib/utils'
+	import { coalesce, lerp, split } from '$lib/utils'
 	import { waveCollapseGenerate } from '$lib/Simulation/Road/generate'
 	import { LANE_AMOUNT } from '$lib/Simulation/Road/render'
 	import { camera, restore } from '$lib/Simulation/Environment/camera'
@@ -15,7 +15,13 @@
 	import { renderNetwork } from '$lib/Simulation/Ai/render'
 	import { create } from '$lib/Simulation/Ai/network'
 	import { rewardNetworks, saveBest } from '$lib/Simulation/Ai/reward'
-	import { storeCloud, storeLocally } from '$lib/Simulation/Ai/storage'
+	import {
+		readLocally,
+		removeLocalStorage,
+		storeCloud,
+		storeLocally
+	} from '$lib/Simulation/Ai/storage'
+	import { mutate } from '$lib/Simulation/Ai/mutate'
 
 	export let debug = false
 
@@ -26,12 +32,11 @@
 	let canvasElement: HTMLCanvasElement
 	let innerWidth: number
 	let innerHeight: number
-	let mounted = false
 
 	onMount(() => {
 		canvas.set(canvasElement)
 		context.set($canvas.getContext('2d') as ContextProp)
-		mounted = true
+		$mounted = true
 	})
 
 	const TILE_SIZE = 200
@@ -48,7 +53,8 @@
 		brain: create([1, 1]),
 		destination: [0, 0],
 		color: '#000',
-		dead: true
+		dead: true,
+		idleTime: 0
 	}
 
 	let carSpots: Car[] = []
@@ -67,7 +73,10 @@
 		},
 		backgroundSaved: false
 	}
-	$: layers = [$brain.sensorCount * 2 + 1, 6, 4, 5]
+	$: {
+		removeLocalStorage()
+		layers = [$brain.sensorCount * 2 + 1, 6, 4, 5]
+	}
 	$: carSpots = new Array($master.carAmount).fill(emptyBox).map((v, i) => {
 		const gridSize = Number($master.gridSize)
 		const tileX = Math.floor(Math.random() * gridSize)
@@ -78,7 +87,10 @@
 		const angle = tile.rotate == 1 ? Math.PI / 2 : 0
 
 		return {
-			brain: create(layers),
+			brain: pipe(
+				readLocally(),
+				coalesce(mutate, () => create(layers))
+			),
 			box: {
 				x:
 					tileX * TILE_SIZE +
@@ -110,14 +122,15 @@
 				TILE_SIZE * ((Math.floor(tileY + gridSize * 0.5) % gridSize) + 0.5)
 			],
 			color: colors[Math.floor(Math.random() * colors.length)],
-			dead: false
+			dead: false,
+			idleTime: 0
 		}
 	})
 
 	$: {
 		die.set(false)
 		carSpots
-		if (mounted) requestAnimationFrame(loop)
+		if ($mounted) requestAnimationFrame(loop)
 	}
 
 	const loop = (time: number, last = time) => {
@@ -144,7 +157,7 @@
 			(success) =>
 				success.every((test) => test)
 					? requestAnimationFrame(() => master.update((master) => ({ ...master })))
-					: alert('error! could note save to each storage')
+					: alert('error! could not save to each storage')
 		)
 	const runPhysics = () =>
 		pipe(
@@ -171,6 +184,7 @@
 
 	onDestroy(() => {
 		destroyed = true
+		$mounted = false
 		logs.set({})
 	})
 </script>

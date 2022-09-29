@@ -24,6 +24,15 @@ export const drawCars = (cars: Car[]) => (ctx: ContextProp) =>
 		poly.forEach((p, i) => (i == 0 ? ctx.moveTo(...p) : ctx.lineTo(...p)))
 		ctx.fill()
 
+		ctx.beginPath()
+		ctx.lineWidth = car.box.width / 4
+		ctx.globalAlpha = car.idleTime / 600
+		ctx.strokeStyle = 'red'
+		poly.forEach((p, i) => (i == 0 ? ctx.moveTo(...p) : ctx.lineTo(...p)))
+		ctx.lineTo(...poly[0])
+		ctx.stroke()
+		ctx.globalAlpha = 1
+
 		return ctx
 	})[0]
 

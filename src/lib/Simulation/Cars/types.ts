@@ -4,6 +4,7 @@ type Car = {
 	dead: boolean
 	destination: XYPosition
 	brain: AI
+	idleTime: number
 }
 
 type CarActions = {

@@ -5,6 +5,11 @@ export const split =
 	(input: T): [L, R] =>
 		[layer1(input), layer2(input)]
 
+export const coalesce =
+	<I, O>(left: (input: I) => O, right: () => O) =>
+	(input: I | null) =>
+		input == null ? right() : left(input)
+
 export const intersection = (
 	A: XYPosition,
 	B: XYPosition,
