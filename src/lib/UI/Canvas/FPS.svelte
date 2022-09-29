@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { logs, config, controlsHelpers } from '$lib/stores'
+	import { logs, config, controlsHelpers, brain } from '$lib/stores'
 
 	const { master, controls } = config
 
@@ -15,6 +15,9 @@
 				: e.target?.value
 		if (controlsHelpers[key].where == 'master') {
 			$master[key] = what
+		} else if (controlsHelpers[key].where == 'brain') {
+			$controls[key] = what
+			brain.set(null)
 		} else {
 			$controls[key] = what
 		}
@@ -67,7 +70,7 @@
 		max-width: calc(50% - 7rem);
 	}
 
-	section:nth-child(4) {
+	section:nth-child(5) {
 		left: unset;
 		right: 0;
 	}

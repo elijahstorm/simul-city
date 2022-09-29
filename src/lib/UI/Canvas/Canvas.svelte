@@ -3,7 +3,7 @@
 	import { controlCars, sensors, updateCars } from '$lib/Simulation/Cars/car'
 	import { ControlsConfig } from '$lib/Simulation/Controls/controls'
 	import { city, clean } from '$lib/Simulation/Environment/city'
-	import { onMount, tick } from 'svelte'
+	import { onMount } from 'svelte'
 	import { canvas, context, die, logs, config } from '$lib/stores'
 	import { onDestroy } from 'svelte'
 	import { lerp } from '$lib/utils'
@@ -12,26 +12,19 @@
 	import { camera, restore } from '$lib/Simulation/Environment/camera'
 	import { removeDead } from '$lib/Simulation/Ai/death'
 	import { ai } from '$lib/Simulation/Ai/run'
-	import { map } from 'fp-ts/lib/Functor'
-
-	export const fps = 60
-	export const tpf = 1000 / fps
+	import { renderNetwork } from '$lib/Simulation/Ai/render'
 
 	const { master, controls } = config
 
 	let canvasElement: HTMLCanvasElement
 	let innerWidth: number
 	let innerHeight: number
+	let mounted = false
 
-	onMount(async () => {
+	onMount(() => {
 		canvas.set(canvasElement)
 		context.set($canvas.getContext('2d') as ContextProp)
-
-		await tick()
-
-		die.set(false)
-
-		loop(new Date())
+		mounted = true
 	})
 
 	const TILE_SIZE = 200
@@ -105,20 +98,24 @@
 		}
 	})
 
-	const loop = (lastTime: Date) => {
+	$: {
+		die.set(false)
+		carSpots
+		if (mounted) requestAnimationFrame(loop)
+	}
+
+	const loop = (time: number, last = time) => {
 		if (destroyed) return
 		if (runPhysics()) {
-			setTimeout(() => master.update((master) => ({ ...master })), 1000)
+			requestAnimationFrame(() => master.update((master) => ({ ...master })))
 			return
 		}
-		renderCamera()
-		frameDelay((time: Date) => {
-			logs.update((logs) => ({
-				...logs,
-				fps: Math.round(100 / (time.getTime() - lastTime.getTime())) * 10
-			}))
-			loop(time)
-		})
+		renderCamera(time)
+		logs.update((logs) => ({
+			...logs,
+			fps: Math.floor(1 / ((time - last) / 1000))
+		}))
+		requestAnimationFrame((newFrame) => loop(newFrame, time))
 	}
 
 	const runPhysics = () =>
@@ -131,7 +128,7 @@
 			controlCars(world)
 		).every((car) => car == null)
 
-	const renderCamera = () =>
+	const renderCamera = (time: number) =>
 		pipe(
 			$context,
 			clean({ width: $canvas.width, height: $canvas.height }),
@@ -140,15 +137,14 @@
 				width: $canvas.width,
 				height: $canvas.height
 			}),
-			restore
+			restore,
+			renderNetwork($controls.showNetwork, time)
 		)
 
 	onDestroy(() => {
 		destroyed = true
 		logs.set({})
 	})
-
-	const frameDelay = (resolve: (time: Date) => void) => setTimeout(() => resolve(new Date()), tpf)
 </script>
 
 <svelte:window
@@ -160,3 +156,16 @@
 
 <canvas id="background-canvas" style="display: none" />
 <canvas bind:this={canvasElement} width={innerWidth} height={innerHeight} />
+<canvas id="network-canvas" width={innerWidth / 2.5} height={innerHeight / 2.5} />
+
+<style>
+	#background-canvas {
+		display: none;
+	}
+	#network-canvas {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		opacity: 0.85;
+	}
+</style>

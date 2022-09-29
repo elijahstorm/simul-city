@@ -1,23 +1,12 @@
-let ai: AI
+import { brain } from '$lib/stores'
 
 export const create = (nodeCounts: number[]) => {
-	if (ai) return ai
 	const layers = new Array<Layer>()
 	for (let i = 0; i < nodeCounts.length - 1; i++) {
 		layers.push(layer(nodeCounts[i], nodeCounts[i + 1]))
 	}
-	ai = { layers }
+	brain.set({ layers })
 	return { layers }
-}
-
-export const prediction = (input: number[]) => (ai: AI) => feedForward(input, ai)
-
-const feedForward = (inputs: LayerNode[], network: AI) => {
-	let outputs = feed(inputs, network.layers[0])
-	for (let i = 1; i < network.layers.length; i++) {
-		outputs = feed(outputs, network.layers[i])
-	}
-	return outputs
 }
 
 const layer = (inputCount: number, outputCount: number): Layer => {
@@ -28,6 +17,20 @@ const layer = (inputCount: number, outputCount: number): Layer => {
 
 	return { inputs, outputs, biases, weights }
 }
+
+export const prediction = (network: AI) => (input: number[]) =>
+	network.layers.reduce((layer, current) => feed(layer, current), input)
+
+export const watch = (network: AI) => (input: number[]) =>
+	network.layers.reduce(
+		(layer, current) => {
+			const input = feed(layer.input, current)
+			const output = layer.output
+			output.push({ ...current, inputs: layer.input, outputs: input })
+			return { input, output }
+		},
+		{ input, output: [] as Layer[] }
+	).output
 
 const feed = (inputs: LayerNode[], layer: Layer) =>
 	layer.outputs.map((_, i) =>

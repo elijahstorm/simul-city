@@ -20,3 +20,7 @@ type Layer = {
 type AI = {
 	layers: Layer[]
 }
+
+type NetworkLayer = (0 | 1)[]
+
+type Network = NetworkLayer[]

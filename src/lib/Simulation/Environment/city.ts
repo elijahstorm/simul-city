@@ -25,16 +25,16 @@ export const city = (world: World, camera: HitBox, cars: Car[], dim: Size) =>
 		wrapDirections.filter((direction) => {
 			const { x, y } = camera
 			const { width, height } = dim
-			logs.update((logs) => ({
-				...logs,
-				x,
-				y,
-				width,
-				height,
-				worldWidth: world.size.width,
-				worldHeight: world.size.height,
-				direction
-			}))
+			// logs.update((logs) => ({
+			// 	...logs,
+			// 	x,
+			// 	y,
+			// 	width,
+			// 	height,
+			// 	worldWidth: world.size.width,
+			// 	worldHeight: world.size.height,
+			// 	direction
+			// }))
 
 			return true
 
