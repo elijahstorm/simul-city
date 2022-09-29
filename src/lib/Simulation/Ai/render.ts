@@ -21,7 +21,7 @@ export const renderNetwork = (display: boolean, time: number) => (ctx: ContextPr
 }
 
 const draw = (display: boolean, network: Layer[], time: number) => (ctx: ContextProp) => {
-	if (!display) return
+	if (!display || !network) return
 
 	const margin = 50
 	const left = margin

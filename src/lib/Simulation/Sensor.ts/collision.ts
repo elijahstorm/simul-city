@@ -3,7 +3,7 @@ import { config } from '$lib/stores'
 let RAY_LENGTH = 100
 let GRID_SIZE = 5
 
-config.controls.subscribe(({ sensorLength }) => {
+config.brain.subscribe(({ sensorLength }) => {
 	RAY_LENGTH = sensorLength
 })
 config.master.subscribe(({ gridSize }) => {

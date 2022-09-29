@@ -3,6 +3,7 @@ import { context, config } from '$lib/stores'
 import { lerp, intersection } from '$lib/utils'
 import { combine } from '../Cars/shape'
 import { visable } from './collision'
+import { drawDestinationPath } from './destination'
 
 let RAY_COUNT = 3
 let RAY_LENGTH = 100
@@ -11,7 +12,7 @@ let ctx: ContextProp
 
 context.update((context) => (ctx = context))
 
-config.controls.subscribe(({ sensorCount, sensorLength, sensorSpread }) => {
+config.brain.subscribe(({ sensorCount, sensorLength, sensorSpread }) => {
 	RAY_COUNT = sensorCount
 	RAY_LENGTH = sensorLength
 	RAY_SPREAD = sensorSpread
@@ -21,9 +22,15 @@ export const sense =
 	(obstacle: Obstacle) =>
 	(box: HitBox): Ray[] =>
 		pipe(visable(box, obstacle), (visable) =>
-			new Array(RAY_COUNT).fill(0).map((_, i) => {
+			new Array(RAY_COUNT * 2).fill(0).map((_, i) => {
 				const angle =
-					lerp(RAY_SPREAD / 2, -RAY_SPREAD / 2, i == 0 ? 0.5 : i / RAY_COUNT) - box.angle
+					(i % 2) * Math.PI +
+					lerp(
+						RAY_SPREAD / 2,
+						-RAY_SPREAD / 2,
+						RAY_COUNT == 1 ? 0.5 : Math.floor(i / 2) / (RAY_COUNT - 1)
+					) -
+					box.angle
 				const start: XYPosition = [box.x, box.y]
 				const end: XYPosition = [
 					box.x - Math.sin(angle) * RAY_LENGTH,
@@ -38,7 +45,10 @@ export const sense =
 		)
 
 export const drawSensors = (cars: Car[], borders: MapBorder) => (ctx: ContextProp) =>
-	cars.map((car) => pipe(car.box, sense(combine(car, borders, cars)), draw(ctx)))[0]
+	cars.map((car) => drawSensor(car, borders, cars))[0]
+
+export const drawSensor = (car: Car, borders: MapBorder, cars: Car[]) => (ctx: ContextProp) =>
+	pipe(car.box, sense(combine(car, borders, cars)), draw(ctx), drawDestinationPath(car))
 
 const draw = (ctx: ContextProp) => (rays: Ray[]) =>
 	rays.map((ray) => {

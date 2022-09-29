@@ -1,11 +1,8 @@
-import { brain } from '$lib/stores'
-
 export const create = (nodeCounts: number[]) => {
 	const layers = new Array<Layer>()
 	for (let i = 0; i < nodeCounts.length - 1; i++) {
 		layers.push(layer(nodeCounts[i], nodeCounts[i + 1]))
 	}
-	brain.set({ layers })
 	return { layers }
 }
 

@@ -2,6 +2,8 @@ type Car = {
 	box: HitBox
 	color: Color
 	dead: boolean
+	destination: XYPosition
+	brain: AI
 }
 
 type CarActions = {

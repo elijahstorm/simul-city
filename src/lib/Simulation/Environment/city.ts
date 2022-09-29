@@ -1,8 +1,8 @@
 import { pipe } from '$lib/fp-ts'
-import { config, logs } from '$lib/stores'
+import { config } from '$lib/stores'
 import { drawCars } from '../Cars/car'
 import { roads } from '../Road/road'
-import { drawSensors } from '../Sensor.ts/sensor'
+import { drawSensor } from '../Sensor.ts/sensor'
 
 type Direction = 0 | -1 | 1
 
@@ -25,46 +25,16 @@ export const city = (world: World, camera: HitBox, cars: Car[], dim: Size) =>
 		wrapDirections.filter((direction) => {
 			const { x, y } = camera
 			const { width, height } = dim
-			// logs.update((logs) => ({
-			// 	...logs,
-			// 	x,
-			// 	y,
-			// 	width,
-			// 	height,
-			// 	worldWidth: world.size.width,
-			// 	worldHeight: world.size.height,
-			// 	direction
-			// }))
 
 			return true
-
-			if (direction[1] == -1) {
-				if (y < height / 2) {
-					return true
-				}
-			} else if (direction[1] == 1) {
-				if (world.size.height - y > height / 2) {
-					return true
-				}
-			}
-
-			if (direction[0] == -1) {
-				if (x < width / 2) {
-					return true
-				}
-			} else if (direction[0] == 1) {
-				if (world.size.width - x > width / 2) {
-					return true
-				}
-			}
-
-			return false
 		}),
 		cars
 	)
 
 let DRAW_SENSORS = false
-config.controls.subscribe(({ drawSensors }) => {
+let CAR_FOCUS = 0
+config.controls.subscribe(({ drawSensors, cameraFocus }) => {
+	CAR_FOCUS = cameraFocus
 	DRAW_SENSORS = drawSensors
 })
 
@@ -74,13 +44,13 @@ const tile = (world: World, wrap: DisplayWrap, cars: Car[]) => {
 			ctx,
 			roads(world),
 			drawCars(cars),
-			DRAW_SENSORS ? drawSensors(cars, world.borders) : (c) => c
+			DRAW_SENSORS ? drawSensor(cars[CAR_FOCUS], world.borders, cars) : (c) => c
 		)
 
-	logs.update((logs) => ({
-		...logs,
-		amount: wrap.reduce((a, v) => a + (v ? 1 : 0), 0)
-	}))
+	// logs.update((logs) => ({
+	// 	...logs,
+	// 	amount: wrap.reduce((a, v) => a + (v ? 1 : 0), 0)
+	// }))
 
 	return (ctx: ContextProp) => {
 		wrap.forEach((dir) => {

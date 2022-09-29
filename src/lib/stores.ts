@@ -2,7 +2,6 @@ import { writable, type Writable } from 'svelte/store'
 
 export const canvas = writable() as Writable<HTMLCanvasElement>
 export const context = writable() as Writable<ContextProp>
-export const brain = writable() as Writable<AI>
 export const die = writable(false) as Writable<boolean>
 export const logs = writable({}) as Writable<object>
 
@@ -11,14 +10,16 @@ export const config = {
 		gridSize: 5,
 		carAmount: 5
 	}),
+	brain: writable({
+		sensorCount: 5,
+		sensorLength: 100,
+		sensorSpread: Math.PI / 2
+	}),
 	controls: writable({
 		showNetwork: true,
 		cameraFocus: 0,
-		sensorCount: 5,
 		playerControls: false,
 		drawSensors: true,
-		sensorLength: 100,
-		sensorSpread: Math.PI / 2,
 		cameraSpeed: 0.06,
 		carThrust: 2,
 		maxSpeed: 8,
@@ -52,20 +53,20 @@ export const controlsHelpers = {
 	},
 	playerControls: {
 		type: 'checkbox',
-		where: 'toggles'
+		where: 'controls'
 	},
 	showNetwork: {
 		type: 'checkbox',
-		where: 'toggles'
+		where: 'controls'
 	},
 	drawSensors: {
 		type: 'checkbox',
-		where: 'toggles'
+		where: 'controls'
 	},
 	sensorCount: {
 		type: 'number',
 		where: 'brain',
-		min: 0,
+		min: 1,
 		max: 30,
 		step: 1
 	},
@@ -80,7 +81,7 @@ export const controlsHelpers = {
 		type: 'number',
 		where: 'brain',
 		min: 0,
-		max: Math.PI * 2,
+		max: Math.PI,
 		step: 0.3
 	},
 	cameraSpeed: {

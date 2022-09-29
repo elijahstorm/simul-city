@@ -2,6 +2,7 @@ import { pipe } from '$lib/fp-ts'
 import { polygon, collide, combine } from './shape'
 import { applyForce, worldWrap } from './movement'
 import { sense } from '../Sensor.ts/sensor'
+import { logs } from '$lib/stores'
 
 export const updateCars = (world: World) => (cars: Car[]) =>
 	cars.map((car) => pipe(car.box, polygon, collide(combine(car, world.borders, cars)), kill(car)))
