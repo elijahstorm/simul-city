@@ -4,7 +4,7 @@
 </script>
 
 <section class="view">
-	<Canvas />
+	<Canvas debug={true} />
 	<FPS />
 </section>
 

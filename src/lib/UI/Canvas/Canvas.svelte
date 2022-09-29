@@ -14,7 +14,11 @@
 	import { ai } from '$lib/Simulation/Ai/run'
 	import { renderNetwork } from '$lib/Simulation/Ai/render'
 
+	export let debug = false
+
 	const { master, controls } = config
+
+	$controls.showNetwork = debug
 
 	let canvasElement: HTMLCanvasElement
 	let innerWidth: number
