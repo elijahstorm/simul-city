@@ -24,3 +24,7 @@ type AI = {
 type NetworkLayer = (0 | 1)[]
 
 type Network = NetworkLayer[]
+
+type FitnessResults = AI & {
+	reward: number
+}

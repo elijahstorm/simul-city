@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>SimulCity</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="title" content="SimulCity" />
+		<meta name="description" content="Collabrative Todos, designed to make group planning easy!" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://elijahstorm.github.io/simul-city/" />
+		<meta property="og:title" content="SimulCity" />
+		<meta
+			property="og:description"
+			content="Collabrative Todos, designed to make group planning easy!"
+		/>
+		<meta
+			property="og:image"
+			content="https://elijahstorm.github.io/simul-city/logo/logo_main.png"
+		/>
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://elijahstorm.github.io/simul-city/" />
+		<meta property="twitter:title" content="SimulCity" />
+		<meta
+			property="twitter:description"
+			content="Collabrative Todos, designed to make group planning easy!"
+		/>
+		<meta
+			property="twitter:image"
+			content="https://elijahstorm.github.io/simul-city/logo/logo_main.png"
+		/>
+
+		<link rel="icon" href="/simul-city/favicon.png" />
+		<meta name="viewport" content="width=device-width" />
+		<meta http-equiv="content-security-policy" content=""><link rel="stylesheet" href="/simul-city/app.css" data-svelte="svelte-1jb9iai"><link rel="preconnect" href="https://fonts.googleapis.com" data-svelte="svelte-1jb9iai"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" data-svelte="svelte-1jb9iai"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;500;700;900&family=Roboto:ital,wght@0,100;0,300;0,500;0,700;0,900;1,500&display=swap" rel="stylesheet" data-svelte="svelte-1jb9iai">
+	<link href="/simul-city/_app/immutable/assets/_page-7aba75af.css" rel="stylesheet">
+	<link href="/simul-city/_app/immutable/assets/Canvas-f1385aaa.css" rel="stylesheet">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/start-844a887f.js">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/chunks/index-7bc860ef.js">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/chunks/singletons-8ac74d20.js">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/chunks/index-17f28254.js">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/chunks/paths-3e0d39dd.js">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/components/pages/_layout.svelte-c46876c4.js">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/modules/pages/_layout.ts-b8ee4d7c.js">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/chunks/_layout-1daba58d.js">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/components/pages/controls/_page.svelte-1a622424.js">
+	<link rel="modulepreload" href="/simul-city/_app/immutable/chunks/Canvas-4892d5e7.js">
+	</head>
+	<body>
+		<div>
+
+
+
+
+<section class="view svelte-1g3irw3">
+
+<canvas id="background-canvas" style="display: none" class="svelte-wies5q"></canvas>
+<canvas></canvas>
+<canvas id="network-canvas" width="NaN" height="NaN" class="svelte-wies5q"></canvas>
+	<section class="svelte-17i36o6"></section>
+
+<section class="svelte-17i36o6"><p class="header svelte-17i36o6">master</p>
+		<div class="svelte-17i36o6"><p>gridSize:
+					</p>
+					<input value="10" type="number" where="master" min="2" max="100" step="1" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>carAmount:
+					</p>
+					<input value="50" type="number" where="master" min="2" max="100" step="1" class="svelte-17i36o6">
+				</div>
+		<hr class="svelte-17i36o6"><p class="header svelte-17i36o6">brain</p>
+		<div class="svelte-17i36o6"><p>sensorCount:
+					</p>
+					<input value="5" type="number" where="brain" min="1" max="30" step="1" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>sensorLength:
+					</p>
+					<input value="100" type="number" where="brain" min="50" max="200" step="10" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>sensorSpread:
+					</p>
+					<input value="1.5707963267948966" type="number" where="brain" min="0" max="3.141592653589793" step="0.3" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>minFitness:
+					</p>
+					<input value="-200" type="number" where="brain" min="-3000" max="0" step="50" class="svelte-17i36o6">
+				</div>
+		<hr class="svelte-17i36o6"><p class="header svelte-17i36o6">controls</p>
+		<div class="svelte-17i36o6"><p>cameraFocus:
+					</p>
+					<input value="0" type="number" where="controls" min="0" max="49" step="1" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>playerControls:
+					</p>
+					<input value="false" type="checkbox" where="controls" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>showNetwork:
+					</p>
+					<input value checked type="checkbox" where="controls" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>drawSensors:
+					</p>
+					<input value checked type="checkbox" where="controls" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>cameraSpeed:
+					</p>
+					<input value="0.06" type="number" where="controls" min="0" max="0.15" step="0.001" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>carThrust:
+					</p>
+					<input value="2" type="number" where="controls" min="1" max="15" step="1" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>carTurnSpeed:
+					</p>
+					<input value="0.5" type="number" where="controls" min="0.3" max="1.5" step="0.1" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>carBreakStrength:
+					</p>
+					<input value="0.4" type="number" where="controls" min="0.05" max="0.3" step="0.05" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>friction:
+					</p>
+					<input value="0.04" type="number" where="controls" min="0.01" max="1" step="0.01" class="svelte-17i36o6">
+				</div><div class="svelte-17i36o6"><p>maxSpeed:
+					</p>
+					<input value="8" type="number" where="controls" min="3" max="20" step="1" class="svelte-17i36o6">
+				</div>
+		<hr class="svelte-17i36o6">
+</section>
+</section>
+
+
+		<script type="module" data-sveltekit-hydrate="1l93pka">
+		import { start } from "/simul-city/_app/immutable/start-844a887f.js";
+
+		start({
+			env: {},
+			hydrate: {
+				status: 200,
+				error: null,
+				node_ids: [0, 3],
+				params: {},
+				routeId: "controls",
+				data: (function(a){return [a,a]}(null)),
+				form: null
+			},
+			paths: {"base":"/simul-city","assets":"/simul-city"},
+			target: document.querySelector('[data-sveltekit-hydrate="1l93pka"]').parentNode,
+			trailing_slash: "always"
+		});
+	</script>
+	</div>
+	</body>
+</html>

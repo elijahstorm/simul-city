@@ -23,9 +23,7 @@ export const city = (world: World, camera: HitBox, cars: Car[], dim: Size) =>
 	tile(
 		world,
 		wrapDirections.filter((direction) => {
-			const { x, y } = camera
-			const { width, height } = dim
-
+			// todo: only render visible tiles
 			return true
 		}),
 		cars

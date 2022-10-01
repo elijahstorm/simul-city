@@ -42,7 +42,7 @@ const Actions: {
 	[key: string]: MovementAction
 } = {
 	ArrowUp: (actions) => (actions.thrust = THRUST_MAGNITUDE),
-	ArrowDown: (actions) => (actions.thrust = -THRUST_MAGNITUDE),
+	ArrowDown: (actions) => (actions.thrust = THRUST_MAGNITUDE * -0.4),
 	ArrowLeft: (actions) => (actions.angle = -ANGLE),
 	ArrowRight: (actions) => (actions.angle = ANGLE),
 	Shift: (actions) => (actions.breaks = BREAK_MAGNITUDE),

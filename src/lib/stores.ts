@@ -3,19 +3,18 @@ import { writable, type Writable } from 'svelte/store'
 export const canvas = writable() as Writable<HTMLCanvasElement>
 export const context = writable() as Writable<ContextProp>
 export const mounted = writable() as Writable<boolean>
-export const die = writable(false) as Writable<boolean>
 export const logs = writable({}) as Writable<object>
 
 export const config = {
 	master: writable({
-		gridSize: 5,
-		carAmount: 5
+		gridSize: 10,
+		carAmount: 50
 	}),
 	brain: writable({
 		sensorCount: 5,
 		sensorLength: 100,
 		sensorSpread: Math.PI / 2,
-		maxIdleFrames: 600
+		minFitness: -200
 	}),
 	controls: writable({
 		showNetwork: true,
@@ -43,7 +42,7 @@ export const controlsHelpers = {
 		type: 'number',
 		where: 'master',
 		min: 2,
-		max: 50,
+		max: 100,
 		step: 1
 	},
 	cameraFocus: {
@@ -86,12 +85,12 @@ export const controlsHelpers = {
 		max: Math.PI,
 		step: 0.3
 	},
-	maxIdleFrames: {
+	minFitness: {
 		type: 'number',
 		where: 'brain',
-		min: 30,
-		max: 2000,
-		step: 10
+		min: -3000,
+		max: 0,
+		step: 50
 	},
 	cameraSpeed: {
 		type: 'number',

@@ -29,7 +29,8 @@ const apply = (box: HitBox) => (actions: CarActions) => {
 			magnitude: Math.max(Math.abs(velocity) - FRICTION - breaks, 0) * (velocity < 0 ? -1 : 1)
 		}
 	}
-	box.angle += angle * velocity
+
+	box.angle = (box.angle + angle * velocity + Math.PI * 2) % (Math.PI * 2)
 
 	box.x += Math.sin(box.angle) * velocity
 	box.y -= Math.cos(box.angle) * velocity

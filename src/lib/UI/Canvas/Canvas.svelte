@@ -4,7 +4,7 @@
 	import { ControlsConfig } from '$lib/Simulation/Controls/controls'
 	import { city, clean } from '$lib/Simulation/Environment/city'
 	import { onMount } from 'svelte'
-	import { canvas, context, die, logs, config, mounted } from '$lib/stores'
+	import { canvas, context, logs, config, mounted } from '$lib/stores'
 	import { onDestroy } from 'svelte'
 	import { coalesce, lerp, split } from '$lib/utils'
 	import { waveCollapseGenerate } from '$lib/Simulation/Road/generate'
@@ -14,14 +14,16 @@
 	import { ai } from '$lib/Simulation/Ai/run'
 	import { renderNetwork } from '$lib/Simulation/Ai/render'
 	import { create } from '$lib/Simulation/Ai/network'
-	import { rewardNetworks, saveBest } from '$lib/Simulation/Ai/reward'
+	import { rewardNetworks, isolateBest } from '$lib/Simulation/Ai/reward'
 	import {
-		readLocally,
+		readStorage,
 		removeLocalStorage,
 		storeCloud,
-		storeLocally
+		storeLocally,
+		validateIfImproved
 	} from '$lib/Simulation/Ai/storage'
 	import { mutate } from '$lib/Simulation/Ai/mutate'
+	import { writable } from 'svelte/store'
 
 	export let debug = false
 
@@ -37,6 +39,12 @@
 		canvas.set(canvasElement)
 		context.set($canvas.getContext('2d') as ContextProp)
 		$mounted = true
+		requestAnimationFrame(loop)
+	})
+	onDestroy(() => {
+		destroyed = true
+		$mounted = false
+		logs.set({})
 	})
 
 	const TILE_SIZE = 200
@@ -54,7 +62,13 @@
 		destination: [0, 0],
 		color: '#000',
 		dead: true,
-		idleTime: 0
+		fitness: 0,
+		performace: 0
+	}
+
+	$: {
+		removeLocalStorage()
+		layers = [$brain.sensorCount * 2 + 1, 4, 5]
 	}
 
 	let carSpots: Car[] = []
@@ -62,108 +76,114 @@
 	let destroyed = false
 	let generatedMap = waveCollapseGenerate(Number($master.gridSize))
 	let layers = [$brain.sensorCount * 2 + 1, 6, 4, 5]
+	let frameCount = 0
+	let currentId = writable<number | null>(null)
 
-	$: generatedMap = waveCollapseGenerate(Number($master.gridSize))
-	$: world = {
-		...generatedMap,
-		dim: $master.gridSize,
-		size: {
-			width: $master.gridSize * TILE_SIZE,
-			height: $master.gridSize * TILE_SIZE
-		},
-		backgroundSaved: false
-	}
 	$: {
-		removeLocalStorage()
-		layers = [$brain.sensorCount * 2 + 1, 6, 4, 5]
-	}
-	$: carSpots = new Array($master.carAmount).fill(emptyBox).map((v, i) => {
-		const gridSize = Number($master.gridSize)
-		const tileX = Math.floor(Math.random() * gridSize)
-		const tileY = Math.floor(Math.random() * gridSize)
+		generatedMap = waveCollapseGenerate(Number($master.gridSize))
 
-		const tile = generatedMap.map[tileX + tileY * gridSize]
-
-		const angle = tile.rotate == 1 ? Math.PI / 2 : 0
-
-		return {
-			brain: pipe(
-				readLocally(),
-				coalesce(mutate, () => create(layers))
-			),
-			box: {
-				x:
-					tileX * TILE_SIZE +
-					lerp(
-						0,
-						TILE_SIZE,
-						(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
-					),
-				y:
-					tileY * TILE_SIZE +
-					lerp(
-						0,
-						TILE_SIZE,
-						(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
-					),
-				width: carWidth,
-				height: carWidth * 1.6,
-				angle,
-				physics: {
-					momentum: {
-						direction: 0,
-						magnitude: 0
-					},
-					mass: Math.random() * 5 + 5
-				}
+		world = {
+			...generatedMap,
+			dim: $master.gridSize,
+			size: {
+				width: $master.gridSize * TILE_SIZE,
+				height: $master.gridSize * TILE_SIZE
 			},
-			destination: [
-				TILE_SIZE * ((Math.floor(tileX + gridSize * 0.5) % gridSize) + 0.5),
-				TILE_SIZE * ((Math.floor(tileY + gridSize * 0.5) % gridSize) + 0.5)
-			],
-			color: colors[Math.floor(Math.random() * colors.length)],
-			dead: false,
-			idleTime: 0
+			backgroundSaved: false
 		}
-	})
 
-	$: {
-		die.set(false)
-		carSpots
+		carSpots = new Array($master.carAmount).fill(emptyBox).map((v, i) => {
+			const gridSize = Number($master.gridSize)
+			const tileX = Math.floor(Math.random() * gridSize)
+			const tileY = Math.floor(Math.random() * gridSize)
+
+			const tile = generatedMap.map[tileX + tileY * gridSize]
+
+			const angle = tile.rotate == 1 ? Math.PI / 2 : 0
+
+			return {
+				brain: pipe(
+					readStorage(),
+					coalesce(mutate, () => create(layers))
+				),
+				box: {
+					x:
+						tileX * TILE_SIZE +
+						lerp(
+							0,
+							TILE_SIZE,
+							(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
+						),
+					y:
+						tileY * TILE_SIZE +
+						lerp(
+							0,
+							TILE_SIZE,
+							(Math.floor(1 + Math.random() * (LANE_AMOUNT - 2)) + 0.5) / LANE_AMOUNT
+						),
+					width: carWidth,
+					height: carWidth * 1.6,
+					angle,
+					physics: {
+						momentum: {
+							direction: 0,
+							magnitude: 0
+						},
+						mass: Math.random() * 5 + 5
+					}
+				},
+				destination: [
+					TILE_SIZE * ((Math.floor(tileX + gridSize * 0.5) % gridSize) + 0.5),
+					TILE_SIZE * ((Math.floor(tileY + gridSize * 0.5) % gridSize) + 0.5)
+				],
+				color: colors[Math.floor(Math.random() * colors.length)],
+				dead: false,
+				fitness: 0,
+				performace: 0
+			}
+		})
+
+		frameCount = 0
+		$currentId = null
 		if ($mounted) requestAnimationFrame(loop)
 	}
 
-	const loop = (time: number, last = time) => {
-		if (destroyed) return
-		if (runPhysics()) {
-			finishAndRestart()
+	const shouldStop = (id: number) => destroyed || $currentId != id
+
+	const loop = (time: number, last = time, id = Math.random()) => {
+		if ($currentId == null) $currentId = id
+		if (shouldStop(id)) return
+		if (runPhysics(frameCount)) {
+			finishAndRestart(frameCount)
 			return
 		}
 		renderCamera(time)
 		logs.update((logs) => ({
 			...logs,
-			fps: Math.floor(1 / ((time - last) / 1000))
+			fps: Math.round(1 / ((time - last) / 1000))
 		}))
-		requestAnimationFrame((newFrame) => loop(newFrame, time))
+		frameCount++
+		requestAnimationFrame((newFrame) => loop(newFrame, time, id))
 	}
 
-	const finishAndRestart = () =>
-		// prettier-ignore
+	const finishAndRestart = (frameCount: number) =>
 		pipe(
 			carSpots,
-			rewardNetworks,
-			saveBest,
+			rewardNetworks(frameCount),
+			isolateBest,
+			validateIfImproved,
 			split(storeLocally, storeCloud),
 			(success) =>
 				success.every((test) => test)
 					? requestAnimationFrame(() => master.update((master) => ({ ...master })))
 					: alert('error! could not save to each storage')
 		)
-	const runPhysics = () =>
+
+	const runPhysics = (frameCount: number) =>
 		pipe(
 			carSpots,
 			updateCars(world),
-			removeDead,
+			removeDead(frameCount),
 			sensors(world.borders),
 			ai,
 			controlCars(world)
@@ -181,12 +201,6 @@
 			restore,
 			renderNetwork($controls.showNetwork, time)
 		)
-
-	onDestroy(() => {
-		destroyed = true
-		$mounted = false
-		logs.set({})
-	})
 </script>
 
 <svelte:window

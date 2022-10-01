@@ -2,7 +2,7 @@ import { pipe } from '$lib/fp-ts'
 import { config } from '$lib/stores'
 import { split } from '$lib/utils'
 import { checkControls } from '../Controls/controls'
-import { diverganceFromCorrectAngle } from '../Sensor.ts/destination'
+import { destinationAngleAccuracy } from '../Sensor.ts/destination'
 import { prediction, watch } from './network'
 import { setNetworkToRender } from './render'
 
@@ -26,7 +26,7 @@ export const ai = (cars: NetworkInputs) =>
 
 const convert = (car: Car, sensor: Ray[], which: number) => {
 	const [thrust, left, right, breaking, reverse] = pipe(
-		[diverganceFromCorrectAngle(car), ...sensor.map((s) => 1 - (s.contacts[0]?.offset ?? 1))],
+		[destinationAngleAccuracy(car), ...sensor.map((s) => 1 - (s.contacts[0]?.offset ?? 1))],
 		split(
 			(input) => (which === CAR_FOCUS ? pipe(input, watch(car.brain), setNetworkToRender) : null),
 			prediction(car.brain)
@@ -36,7 +36,7 @@ const convert = (car: Car, sensor: Ray[], which: number) => {
 	return {
 		car,
 		action: {
-			thrust: THRUST_MAGNITUDE * thrust * (reverse > 0.5 ? -1 : 1),
+			thrust: THRUST_MAGNITUDE * thrust * (reverse > 0.5 ? -0.4 : 1),
 			angle: ANGLE * -left + ANGLE * right,
 			breaks: BREAK_MAGNITUDE * breaking
 		}

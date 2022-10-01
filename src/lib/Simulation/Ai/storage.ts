@@ -1,10 +1,12 @@
-import { mounted } from '$lib/stores'
+import { pipe } from '$lib/fp-ts'
+import { logs, mounted } from '$lib/stores'
+import { coalesce } from '$lib/utils'
 
 const BEST = 'bestNetwork'
 let MOUNTED = false
 mounted.subscribe((v) => (MOUNTED = v))
 
-const save = (network: AI) => {
+const save = (network: FitnessResults) => {
 	if (!MOUNTED) return false
 	try {
 		localStorage.setItem(BEST, JSON.stringify(network))
@@ -33,12 +35,31 @@ const read = (): string | null => {
 	}
 }
 
-export const storeLocally = (network: { ai: AI; reward: number }) => save(network.ai)
+export const storeLocally = (network: FitnessResults | null) =>
+	network == null ? true : save(network)
 
-export const storeCloud = (network: { ai: AI; reward: number }) => true
+export const storeCloud = (network: FitnessResults | null) => true
 
-export const readLocally = () => JSON.parse(read() ?? 'null') as AI | null
+const readLocally = () => JSON.parse(read() ?? 'null') as FitnessResults | null
 
-export const readCloud = readLocally
+const readCloud = readLocally
+
+export const readStorage = () =>
+	pipe(
+		readLocally(),
+		coalesce<FitnessResults | null, FitnessResults | null>((r) => r, readCloud)
+	)
 
 export const removeLocalStorage = destroy
+
+export const validateIfImproved = (result: FitnessResults) => {
+	const best = readStorage()
+
+	logs.update((logs) => ({
+		...logs,
+		curReward: result.reward,
+		bestReward: best?.reward
+	}))
+
+	return best == null ? result : best.reward < result.reward ? result : null
+}

@@ -1,7 +1,7 @@
 import { pipe } from '$lib/fp-ts'
 import { lerp } from '$lib/utils'
 
-export const mutate = (network: AI, amount = 1): AI => ({
+export const mutate = (network: AI, amount = 0.1): AI => ({
 	layers: adjust(network, amount)
 })
 

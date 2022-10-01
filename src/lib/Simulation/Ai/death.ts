@@ -1,31 +1,39 @@
 import { config } from '$lib/stores'
+import { fitness } from './reward'
 
 let camera = 0
-let MAX_IDLE_TIME = 600
-config.controls.subscribe(({ cameraFocus }) => {
+let MIN_FITNESS = 600
+let PLAYER_CONTROLLING = false
+config.controls.subscribe(({ cameraFocus, playerControls }) => {
+	PLAYER_CONTROLLING = playerControls
 	camera = cameraFocus
 })
-config.brain.subscribe(({ maxIdleFrames }) => {
-	MAX_IDLE_TIME = maxIdleFrames
+config.brain.subscribe(({ minFitness }) => {
+	MIN_FITNESS = minFitness
 })
 
-export const removeDead = (cars: Car[]) => {
-	cars.map((car) => killIfIdle(car))
-	if (cars[camera].dead) {
+export const removeDead = (frameCount: number) => (cars: Car[]) => {
+	cars.map((car) => killIfUnfit(car, frameCount))
+
+	const bestActor =
+		cars
+			.slice()
+			.map((car, i) => ({ car, i }))
+			.filter((which) => !which.car.dead)
+			.sort((a, b) => b.car.fitness - a.car.fitness)[0]?.i ?? 0
+
+	if (!PLAYER_CONTROLLING && camera != null && camera != bestActor) {
 		config.controls.update((crtls) => ({
 			...crtls,
-			cameraFocus: Math.max(
-				cars.findIndex((c) => !c.dead),
-				0
-			)
+			cameraFocus: bestActor
 		}))
 	}
-	return cars.filter((c, i) => !cars[i].dead) as Car[]
+
+	return cars.filter((car) => !car.dead) as Car[]
 }
 
-const killIfIdle = (car: Car) =>
-	Math.abs(car.box.physics?.momentum.magnitude ?? 0) < 0.5
-		? car.idleTime++ > MAX_IDLE_TIME
-			? (car.dead = true)
-			: null
-		: (car.idleTime = 0)
+const killIfUnfit = (car: Car, frameCount: number) =>
+	// car.dead ? null : fitnessCheck(car, frameCount) < MIN_FITNESS ? (car.dead = true) : null
+	null
+
+const fitnessCheck = (car: Car, frameCount: number) => (car.fitness = fitness(frameCount)(car))

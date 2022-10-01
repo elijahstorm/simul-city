@@ -16,6 +16,11 @@
 	--default-padding: 24px;
 }
 
+html,
+body {
+	overflow: hidden;
+}
+
 body {
 	background: var(--bg);
 	color: var(--text);
@@ -183,7 +188,7 @@ blockquote:before,
 blockquote:after,
 q:before,
 q:after {
-	content: "";
+	content: '';
 	content: none;
 }
 table {
