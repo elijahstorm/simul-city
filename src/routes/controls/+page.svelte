@@ -3,14 +3,5 @@
 	import FPS from '$lib/UI/Canvas/FPS.svelte'
 </script>
 
-<section class="view">
-	<Canvas debug={true} />
-	<FPS />
-</section>
-
-<style>
-	section {
-		position: relative;
-		display: grid;
-	}
-</style>
+<Canvas debug={true} />
+<FPS />

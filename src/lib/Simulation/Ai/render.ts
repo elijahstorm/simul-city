@@ -13,17 +13,19 @@ const TEXT_COLOR = 'white'
 let network: Layer[]
 
 export const renderNetwork = (display: boolean, time: number) => (ctx: ContextProp) => {
+	if (!display) return ctx
+
 	const size: Size = { width: ctx.canvas.width / 2.5, height: ctx.canvas.height / 2.5 }
 
 	networkContext = networkContext ?? declareCanvas(networkCanvasId, size).ctx
 
-	pipe(networkContext, clean(size), draw(display, network, time))
+	pipe(networkContext, clean(size), draw(network, time))
 
 	return ctx
 }
 
-const draw = (display: boolean, network: Layer[], time: number) => (ctx: ContextProp) => {
-	if (!display || !network) return
+const draw = (network: Layer[], time: number) => (ctx: ContextProp) => {
+	if (!network) return
 
 	const margin = 50
 	const left = margin

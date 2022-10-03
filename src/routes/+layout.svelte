@@ -12,4 +12,13 @@
 	/>
 </svelte:head>
 
-<slot />
+<section class="view">
+	<slot />
+</section>
+
+<style>
+	section {
+		position: relative;
+		display: grid;
+	}
+</style>
