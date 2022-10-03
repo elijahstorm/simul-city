@@ -7,10 +7,12 @@
 	import CameraRig from './CameraRig.svelte'
 	import LightRig from './LightRig.svelte'
 	import FinishSensor from './FinishSensor.svelte'
+	import City from './City.svelte'
 </script>
 
 <LightRig />
 <CameraRig />
+<City />
 <Track />
 <Player />
 <FinishSensor />
