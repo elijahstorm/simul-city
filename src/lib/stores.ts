@@ -7,20 +7,20 @@ export const logs = writable({}) as Writable<object>
 
 export const config = {
 	master: writable({
-		gridSize: 30,
+		gridSize: 35,
 		carAmount: 500
 	}),
 	brain: writable({
 		sensorCount: 5,
-		sensorLength: 100,
+		sensorLength: 200,
 		sensorSpread: Math.PI / 2,
-		minFitness: -200
+		minFitness: -400
 	}),
 	controls: writable({
 		showNetwork: true,
 		cameraFocus: 0,
 		playerControls: false,
-		drawSensors: true,
+		drawSensors: false,
 		cameraSpeed: 0.06,
 		carThrust: 2,
 		maxSpeed: 8,
@@ -43,7 +43,7 @@ export const controlsHelpers = {
 		where: 'master',
 		min: 2,
 		max: 1000,
-		step: 1
+		step: 10
 	},
 	cameraFocus: {
 		type: 'number',
@@ -74,9 +74,9 @@ export const controlsHelpers = {
 	sensorLength: {
 		type: 'number',
 		where: 'brain',
-		min: 50,
-		max: 200,
-		step: 10
+		min: 60,
+		max: 300,
+		step: 20
 	},
 	sensorSpread: {
 		type: 'number',

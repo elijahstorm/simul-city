@@ -12,8 +12,8 @@ config.brain.subscribe(({ minFitness }) => {
 	MIN_FITNESS = minFitness
 })
 
-export const removeDead = (frameCount: number) => (cars: Car[]) => {
-	cars.map((car) => killIfUnfit(car, frameCount))
+export const removeDead = (cars: Car[]) => {
+	cars.map((car) => killIfUnfit(car))
 
 	const bestActor =
 		cars
@@ -32,7 +32,7 @@ export const removeDead = (frameCount: number) => (cars: Car[]) => {
 	return cars.filter((car) => !car.dead) as Car[]
 }
 
-const killIfUnfit = (car: Car, frameCount: number) =>
-	car.dead ? null : fitnessCheck(car, frameCount) < MIN_FITNESS ? (car.dead = true) : null
+const killIfUnfit = (car: Car) =>
+	car.dead ? null : fitnessCheck(car) < MIN_FITNESS ? (car.dead = true) : null
 
-const fitnessCheck = (car: Car, frameCount: number) => (car.fitness = fitness(frameCount)(car))
+const fitnessCheck = (car: Car) => (car.fitness = fitness(car))

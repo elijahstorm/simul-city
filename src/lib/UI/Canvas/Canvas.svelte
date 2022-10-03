@@ -169,7 +169,7 @@
 	const finishAndRestart = (frameCount: number) =>
 		pipe(
 			carSpots,
-			rewardNetworks(frameCount),
+			rewardNetworks,
 			isolateBest,
 			validateIfImproved,
 			split(storeLocally, storeCloud),
@@ -183,7 +183,7 @@
 		pipe(
 			carSpots,
 			updateCars(world),
-			removeDead(frameCount),
+			removeDead,
 			sensors(world.borders),
 			ai,
 			controlCars(world)

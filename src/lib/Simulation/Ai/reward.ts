@@ -3,19 +3,22 @@ import { config } from '$lib/stores'
 import { distanceFromDestination } from '../Sensor.ts/destination'
 
 let totalMapSize = 100
+let MIN_FITNESS = -400
 config.master.subscribe((props) => {
 	const length = props.gridSize * 200
 	totalMapSize = Math.sqrt(length ** 2 + length ** 2)
 })
+config.brain.subscribe(({ minFitness }) => {
+	MIN_FITNESS = minFitness
+})
 
-export const rewardNetworks = (frameCount: number) => (cars: Car[]) =>
+export const rewardNetworks = (cars: Car[]) =>
 	cars.map((car) => pipe(car, reward, convert(car.brain)))
 
-const reward = (car: Car) => -distanceFromDestination(car) / totalMapSize + car.performace
+const reward = (car: Car) =>
+	car.performace + (distanceFromDestination(car) / totalMapSize) * MIN_FITNESS
 
-export const fitness = (frameCount: number) => (car: Car) => -(frameCount ** 2 / 300) + reward(car)
-
-export const mapSizeFitnessScore = () => totalMapSize
+export const fitness = (car: Car) => reward(car)
 
 const convert = (ai: AI) => (reward: number) => ({
 	...ai,
