@@ -45,11 +45,6 @@ const tile = (world: World, wrap: DisplayWrap, cars: Car[]) => {
 			DRAW_SENSORS ? drawSensor(cars[CAR_FOCUS], world.borders, cars) : (c) => c
 		)
 
-	// logs.update((logs) => ({
-	// 	...logs,
-	// 	amount: wrap.reduce((a, v) => a + (v ? 1 : 0), 0)
-	// }))
-
 	return (ctx: ContextProp) => {
 		wrap.forEach((dir) => {
 			ctx.save()

@@ -2,11 +2,11 @@ import { pipe } from '$lib/fp-ts'
 import { lerp } from '$lib/utils'
 
 export const mutate = (network: AI, amount = 0.1): AI => ({
-	layers: adjust(network, amount)
+	layers: adjust(network.layers, amount)
 })
 
-const adjust = (network: AI, amount: number) =>
-	network.layers.map((layer) => pipe(layer, adjustBiases(amount), adjustWeights(amount)))
+const adjust = (layers: Layer[], amount: number) =>
+	layers.map((layer) => pipe(layer, adjustBiases(amount), adjustWeights(amount)))
 
 const adjustBiases = (amount: number) => (layer: Layer) => {
 	layer.biases = layer.biases.map((b) => lerp(b, Math.random() * 2 - 1, amount))

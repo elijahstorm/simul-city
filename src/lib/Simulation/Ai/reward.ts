@@ -9,7 +9,7 @@ config.master.subscribe((props) => {
 })
 
 export const rewardNetworks = (frameCount: number) => (cars: Car[]) =>
-	cars.map((car) => pipe(car, reward, cull(frameCount), convert(car.brain)))
+	cars.map((car) => pipe(car, reward, convert(car.brain)))
 
 const reward = (car: Car) => -distanceFromDestination(car) / totalMapSize + car.performace
 
@@ -21,8 +21,6 @@ const convert = (ai: AI) => (reward: number) => ({
 	...ai,
 	reward
 })
-
-const cull = (frameCount: number) => (fitness: number) => frameCount < 60 ? -10000000 : fitness
 
 export const isolateBest = (networks: FitnessResults[]) => {
 	networks.sort((a, b) => b.reward - a.reward)

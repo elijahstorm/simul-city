@@ -5,8 +5,10 @@ import { clean } from '../Environment/city'
 
 let networkContext: ContextProp
 const networkCanvasId = 'network-canvas'
-const NODE_COLOR = 'white'
+const NODE_COLOR = 'transparent'
+const BORDER_COLOR = 'grey'
 const BACKGROUND_COLOR = 'black'
+const TEXT_COLOR = 'white'
 
 let network: Layer[]
 
@@ -44,7 +46,7 @@ const draw = (display: boolean, network: Layer[], time: number) => (ctx: Context
 		ctx.canvas.height - borderWidth * 2
 	)
 
-	ctx.strokeStyle = NODE_COLOR
+	ctx.strokeStyle = BORDER_COLOR
 	ctx.strokeRect(
 		borderWidth * 3,
 		borderWidth * 3,
@@ -134,8 +136,8 @@ const drawLevel = (
 			ctx.beginPath()
 			ctx.textAlign = 'center'
 			ctx.textBaseline = 'middle'
-			ctx.fillStyle = BACKGROUND_COLOR
-			ctx.strokeStyle = BACKGROUND_COLOR
+			ctx.fillStyle = TEXT_COLOR
+			ctx.strokeStyle = TEXT_COLOR
 			ctx.font = nodeRadius * 0.9 + 'px Arial'
 			ctx.fillText(outputLabels[i], x, top + nodeRadius * 0.1)
 			ctx.lineWidth = 0.5

@@ -6,6 +6,7 @@ export const polygon = (box: HitBox) => {
 
 	const rad = Math.hypot(box.width, box.height) / 2
 	const alpha = Math.atan2(box.width, box.height)
+
 	polygon.push([
 		box.x - Math.sin(-box.angle - alpha) * rad,
 		box.y - Math.cos(-box.angle - alpha) * rad
@@ -37,5 +38,12 @@ export const collide = (obstacle: Obstacle) => (inputs: { box: HitBox; polygon: 
 }
 
 export const combine = (car: Car, borders: MapBorder, cars: Car[]) => {
-	return { borders, polygons: cars.map((c) => (c === car ? [] : polygon(c.box).polygon)) }
+	return {
+		borders,
+		polygons: cars
+			.filter((c) => c !== car && distance(c.box, car.box) <= Math.max(c.box.width, c.box.height))
+			.map((c) => polygon(c.box).polygon)
+	}
 }
+
+const distance = (b1: HitBox, b2: HitBox) => Math.sqrt((b1.x - b2.x) ** 2 + (b1.y - b2.y) ** 2)

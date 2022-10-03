@@ -7,8 +7,8 @@ export const logs = writable({}) as Writable<object>
 
 export const config = {
 	master: writable({
-		gridSize: 10,
-		carAmount: 50
+		gridSize: 30,
+		carAmount: 500
 	}),
 	brain: writable({
 		sensorCount: 5,
@@ -42,7 +42,7 @@ export const controlsHelpers = {
 		type: 'number',
 		where: 'master',
 		min: 2,
-		max: 100,
+		max: 1000,
 		step: 1
 	},
 	cameraFocus: {

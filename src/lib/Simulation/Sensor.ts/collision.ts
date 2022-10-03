@@ -30,10 +30,7 @@ const nearby = (where: XYPosition, walls: MapBorder) => {
 
 export const cull = (box: HitBox, obstacle: Obstacle): Wall[] => [
 	...nearby([box.x, box.y], obstacle.borders),
-	...obstacle.polygons.reduce(
-		(a, p) => [...a, ...p.map((poly, i) => [poly, p[(i + 1) % p.length]] as Wall)],
-		[] as Wall[]
-	)
+	...carCollision(box, obstacle)
 ]
 
 export const visable = (box: HitBox, obstacle: Obstacle): Wall[] => [
@@ -42,8 +39,11 @@ export const visable = (box: HitBox, obstacle: Obstacle): Wall[] => [
 		[box.x - Math.sin(box.angle) * RAY_LENGTH, box.y - Math.cos(box.angle) * RAY_LENGTH],
 		obstacle.borders
 	),
-	...obstacle.polygons.reduce(
+	...carCollision(box, obstacle)
+]
+
+const carCollision = (box: HitBox, obstacle: Obstacle) =>
+	obstacle.polygons.reduce(
 		(a, p) => [...a, ...p.map((poly, i) => [poly, p[(i + 1) % p.length]] as Wall)],
 		[] as Wall[]
 	)
-]

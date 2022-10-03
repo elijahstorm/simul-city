@@ -33,7 +33,6 @@ export const removeDead = (frameCount: number) => (cars: Car[]) => {
 }
 
 const killIfUnfit = (car: Car, frameCount: number) =>
-	// car.dead ? null : fitnessCheck(car, frameCount) < MIN_FITNESS ? (car.dead = true) : null
-	null
+	car.dead ? null : fitnessCheck(car, frameCount) < MIN_FITNESS ? (car.dead = true) : null
 
 const fitnessCheck = (car: Car, frameCount: number) => (car.fitness = fitness(frameCount)(car))
