@@ -74,12 +74,12 @@ const createNewCar = (
 	}
 }
 
-export const generate = (brain: CONFIG.brain) => {
+export const generate = (brain: CONFIG.brain, input: SimulationInput) => {
 	const currentId = null
 
 	const generatedMap = waveCollapseGenerate(Number(MASTER.gridSize))
 
-	const world = {
+	const world = input?.world ?? {
 		generatedMap,
 		dim: MASTER.gridSize,
 		size: {
@@ -100,12 +100,13 @@ export const generate = (brain: CONFIG.brain) => {
 		)
 	)
 
-	const carSpots = new Array(MASTER.carAmount)
-		.fill(configDefaults.simulation.carSpots[0])
-		.map(() => createNewCar(generatedMap, brain.sensorCount, previousBestBrain))
+	const carSpots =
+		input?.carSpots ??
+		new Array(MASTER.carAmount)
+			.fill(configDefaults.simulation.carSpots[0])
+			.map(() => createNewCar(generatedMap, brain.sensorCount, previousBestBrain))
 
 	return {
-		generatedMap,
 		world,
 		carSpots,
 		currentId

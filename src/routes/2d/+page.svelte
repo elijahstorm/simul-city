@@ -4,10 +4,12 @@
 	import { base } from '$app/paths'
 	import TopDownViewer from '$lib/Rendering/Scene/TopDownViewer.svelte'
 
+	let input: SimulationInput
+
 	const click = () => (browser ? goto(`${base}/2d/controls`) : null)
 </script>
 
-<TopDownViewer />
+<TopDownViewer {input} />
 <button on:click={click}>go to controls</button>
 
 <style>

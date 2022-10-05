@@ -1,8 +1,6 @@
 namespace CONFIG {
-	export type simulation = {
+	export type simulation = SimulationInput & {
 		currentId: number | null
-		carSpots: Car[]
-		world: World
 		destroyed: boolean
 		layers: number[]
 	}

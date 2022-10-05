@@ -3,9 +3,10 @@
 	import { HTML } from '@threlte/extras'
 	import { Debug, World } from '@threlte/rapier'
 	import Scene from './Scene.svelte'
+	import Engine from './Engine.svelte'
 
 	export let controls = false
-	export let simulation: SimulationInput = {}
+	export let input: SimulationInput
 </script>
 
 <div class="wrapper">
@@ -29,6 +30,8 @@
 </div>
 
 <slot />
+
+<Engine {input} />
 
 <style>
 	.wrapper {

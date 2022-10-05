@@ -4,16 +4,14 @@
 	import { city, clean } from '$lib/Simulation/Environment/city'
 	import { onMount } from 'svelte'
 	import { canvas, context, config, mounted } from '$lib/stores'
-	import { onDestroy } from 'svelte'
 	import { camera, restore } from '$lib/Simulation/Environment/camera'
 	import { renderNetwork } from '$lib/Simulation/Ai/render'
-	import { generate, start } from '$lib/Simulation/engine'
-	import { removeLocalStorage } from '$lib/Simulation/Ai/storage'
+	import Engine from './Engine.svelte'
 
 	export let debug = false
-	export let input: SimulationInput = {}
+	export let input: SimulationInput
 
-	const { master, simulation, brain, controls } = config
+	const { simulation, controls } = config
 
 	$controls.showNetwork = debug
 
@@ -24,30 +22,8 @@
 	onMount(() => {
 		canvas.set(canvasElement)
 		context.set($canvas.getContext('2d') as ContextProp)
-		$mounted = true
-		$simulation.destroyed = false
 		loop()
 	})
-	onDestroy(() => {
-		$simulation.destroyed = true
-		$mounted = false
-	})
-
-	$: {
-		$master
-		config.simulation.update((simulation) => ({
-			...simulation,
-			...generate($brain)
-		}))
-	}
-	$: {
-		$brain
-		removeLocalStorage()
-	}
-	$: {
-		$master
-		if ($mounted) start()
-	}
 
 	const render = (time: number) => pipe(time, renderCamera, loop)
 
@@ -86,6 +62,8 @@
 
 	<slot />
 </section>
+
+<Engine {input} />
 
 <style>
 	section {

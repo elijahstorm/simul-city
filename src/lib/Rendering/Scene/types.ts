@@ -1,1 +1,7 @@
-type SimulationInput = object
+type SimulationInput =
+	| {
+			carSpots: Car[]
+			world: World
+	  }
+	| undefined
+	| null
