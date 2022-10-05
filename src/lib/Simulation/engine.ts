@@ -92,10 +92,7 @@ export const generate = (brain: CONFIG.brain, input: SimulationInput) => {
 	const previousBestBrain = pipe(
 		readStorage(),
 		coalesce(
-			(network: AI) => {
-				console.log('checking', brain.sensorCount, network.layers[0].inputs.length)
-				return brain.sensorCount === network.layers[0].inputs.length ? network : null
-			},
+			(network: AI) => (brain.sensorCount === network.layers[0].inputs.length ? network : null),
 			() => null
 		)
 	)

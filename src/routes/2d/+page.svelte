@@ -1,22 +1,9 @@
 <script lang="ts">
-	import { browser } from '$app/environment'
-	import { goto } from '$app/navigation'
-	import { base } from '$app/paths'
+	import ControlsPrompt from '$lib/Rendering/Scene/ControlsPrompt.svelte'
 	import TopDownViewer from '$lib/Rendering/Scene/TopDownViewer.svelte'
 
 	let input: SimulationInput
-
-	const click = () => (browser ? goto(`${base}/2d/controls`) : null)
 </script>
 
 <TopDownViewer {input} />
-<button on:click={click}>go to controls</button>
-
-<style>
-	button {
-		position: absolute;
-		right: 2rem;
-		bottom: 2rem;
-		cursor: pointer;
-	}
-</style>
+<ControlsPrompt where="2d" />

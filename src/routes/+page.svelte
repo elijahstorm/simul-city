@@ -1,13 +1,52 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
-	import { browser } from '$app/environment'
-	import { base } from '$app/paths'
+	import TopDownViewer from '$lib/Rendering/Scene/TopDownViewer.svelte'
+	import WorldViewer from '$lib/Rendering/Scene/WorldViewer.svelte'
 
-	const view2d = () => (browser ? goto(`${base}/2d`) : null)
-	const view3d = () => (browser ? goto(`${base}/3d`) : null)
+	let simple = false
+
+	const view2d = () => (simple = true)
+	const view3d = () => (simple = false)
+
+	let input: SimulationInput = {}
+
+	$: {
+		// input = {}
+	}
 </script>
 
-running intro
+<div class="container">
+	<div class="buttons">
+		<button on:click={view2d}>view2d</button>
+		<button on:click={view3d}>view3d</button>
+	</div>
 
-<button on:click={view2d}>view2d</button>
-<button on:click={view3d}>view3d</button>
+	<div class="render">
+		{#if simple}
+			<TopDownViewer {input} />
+		{:else}
+			<WorldViewer {input} />
+		{/if}
+	</div>
+</div>
+
+<style>
+	.container {
+		width: 100vw;
+		height: 100vh;
+		display: grid;
+		grid-template-columns: 1fr 8fr 1fr;
+		grid-template-rows: 1fr 8fr 1fr;
+	}
+
+	.render {
+		grid-column: 1 / 2;
+		grid-row: 2;
+	}
+
+	.buttons {
+		margin: auto;
+		display: flex;
+		grid-column: 1;
+		grid-row: 1;
+	}
+</style>

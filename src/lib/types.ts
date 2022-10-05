@@ -1,5 +1,5 @@
 namespace CONFIG {
-	export type simulation = SimulationInput & {
+	export type simulation = Simulation & {
 		currentId: number | null
 		destroyed: boolean
 		layers: number[]
