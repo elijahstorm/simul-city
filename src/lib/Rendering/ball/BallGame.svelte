@@ -3,7 +3,7 @@
 	import { World } from '@threlte/rapier'
 	import { status, time } from './state'
 	import { slide } from 'svelte/transition'
-	import Scene from './Scene.svelte'
+	import BallDemoScene from './BallDemoScene.svelte'
 	import Timer from './Timer.svelte'
 </script>
 
@@ -11,7 +11,7 @@
 <div class="wrapper">
 	<Canvas>
 		<World>
-			<Scene />
+			<BallDemoScene />
 		</World>
 	</Canvas>
 	<div class="timer row">

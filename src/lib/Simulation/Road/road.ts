@@ -22,7 +22,7 @@ export const roads = (world: World) => (ctx: ContextProp) => {
 
 const draw = (world: World) => (props: { canvas: HTMLCanvasElement; ctx: ContextProp }) => {
 	const { canvas, ctx } = props
-	const { map, size, dim } = world
+	const { generatedMap, size, dim } = world
 
 	ctx.fillStyle = 'green'
 	ctx.fillRect(0, 0, size.width, size.height)
@@ -32,15 +32,15 @@ const draw = (world: World) => (props: { canvas: HTMLCanvasElement; ctx: Context
 		height: size.height / dim
 	}
 
-	new Array(map.length).fill(0).map((_, i) => {
+	new Array(generatedMap.map.length).fill(0).map((_, i) => {
 		ctx.save()
 		ctx.translate(
 			lerp(0, size.width, (i % dim) / dim) + tileSize.width / 2,
 			lerp(0, size.height, Math.floor(i / dim) / dim) + tileSize.height / 2
 		)
-		ctx.rotate((map[i].rotate * 90 * Math.PI) / 180)
+		ctx.rotate((generatedMap.map[i].rotate * 90 * Math.PI) / 180)
 		ctx.translate(-tileSize.width / 2, -tileSize.height / 2)
-		map[i].draw(ctx)(tileSize)
+		generatedMap.map[i].draw(ctx)(tileSize)
 		ctx.restore()
 	})
 

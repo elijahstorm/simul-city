@@ -42,7 +42,7 @@ const tile = (world: World, wrap: DisplayWrap, cars: Car[]) => {
 			ctx,
 			roads(world),
 			drawCars(cars),
-			DRAW_SENSORS ? drawSensor(cars[CAR_FOCUS], world.borders, cars) : (c) => c
+			DRAW_SENSORS ? drawSensor(cars[CAR_FOCUS], world.generatedMap.borders, cars) : (c) => c
 		)
 
 	return (ctx: ContextProp) => {

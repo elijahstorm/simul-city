@@ -17,7 +17,7 @@ export const updateCars = (world: World) => (cars: Car[]) =>
 			: pipe(
 					car.box,
 					polygon,
-					collide(combine(car, world.borders, cars)),
+					collide(combine(car, world.generatedMap.borders, cars)),
 					kill(car),
 					rewardSpeed,
 					rewardAccuracy

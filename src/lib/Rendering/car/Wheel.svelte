@@ -7,6 +7,8 @@
 	import type { Position } from '@threlte/core'
 	import { Mesh } from '@threlte/core'
 	import { Collider, RigidBody, useRevoluteJoint } from '@threlte/rapier'
+	import type { Material } from 'three'
+	import type { BufferGeometry } from 'three'
 	import { CylinderGeometry, MeshStandardMaterial } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import { useWasd } from './useWasd'
@@ -16,6 +18,8 @@
 	export let anchor: Position
 	let collider: RapierCollider
 	export let isDriven = false
+	export let geometry: BufferGeometry | undefined
+	export let material: Material | Material[] | undefined
 
 	const wasd = useWasd()
 
@@ -60,8 +64,7 @@
 	<!-- WHEEL MESH -->
 	<Mesh
 		castShadow
-		rotation={{ x: 90 * DEG2RAD }}
-		geometry={new CylinderGeometry(0.3, 0.3, 0.24)}
-		material={new MeshStandardMaterial()}
+		geometry={geometry ?? new CylinderGeometry(0.3, 0.3, 0.24)}
+		material={material ?? new MeshStandardMaterial()}
 	/>
 </RigidBody>

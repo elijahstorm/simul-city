@@ -6,6 +6,8 @@
 	import { Group, type Position } from '@threlte/core'
 	import { Collider, RigidBody, useFixedJoint, useRevoluteJoint } from '@threlte/rapier'
 	import { spring } from 'svelte/motion'
+	import type { Material } from 'three'
+	import type { BufferGeometry } from 'three'
 	import { clamp, DEG2RAD, mapLinear } from 'three/src/math/MathUtils'
 	import { useCar } from './Car.svelte'
 	import { useWasd } from './useWasd'
@@ -17,6 +19,8 @@
 	export let isSteered: boolean = false
 	export let isDriven: boolean = false
 	export let side: 'left' | 'right'
+	export let geometry: BufferGeometry | undefined
+	export let material: Material | Material[] | undefined
 
 	let axleRigidBody: RapierRigidBody
 
@@ -48,6 +52,8 @@
 
 	<Wheel
 		{isDriven}
+		{geometry}
+		{material}
 		anchor={{ z: side === 'left' ? 0.2 : -0.2 }}
 		position={{ z: side === 'left' ? 0.2 : -0.2 }}
 		parentRigidBody={axleRigidBody}

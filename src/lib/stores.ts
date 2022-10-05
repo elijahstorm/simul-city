@@ -1,3 +1,4 @@
+import { create } from '$lib/Simulation/Ai/network'
 import { writable, type Writable } from 'svelte/store'
 
 export const canvas = writable() as Writable<HTMLCanvasElement>
@@ -5,18 +6,69 @@ export const context = writable() as Writable<ContextProp>
 export const mounted = writable() as Writable<boolean>
 export const logs = writable({}) as Writable<object>
 
-export const config = {
-	master: writable({
+export const configDefaults: {
+	simulation: CONFIG.simulation
+	master: CONFIG.master
+	brain: CONFIG.brain
+	controls: CONFIG.controls
+} = {
+	simulation: {
+		currentId: 0,
+		carSpots: [
+			{
+				box: {
+					x: 100,
+					y: 100,
+					width: 30,
+					height: 55,
+					angle: 0
+				},
+				brain: create([1, 1]),
+				destination: [0, 0],
+				color: '#000',
+				dead: true,
+				fitness: 0,
+				performace: 0
+			}
+		],
+		world: {
+			generatedMap: {
+				map: [
+					{
+						draw: (ctx: ContextProp) => (size: Size) => null,
+						rotate: 0
+					}
+				],
+				borders: [
+					[
+						[
+							[0, 0],
+							[0, 0]
+						]
+					]
+				]
+			},
+			dim: 1,
+			size: {
+				width: 1,
+				height: 1
+			},
+			backgroundSaved: false
+		},
+		destroyed: false,
+		layers: [6, 4, 5]
+	},
+	master: {
 		gridSize: 35,
 		carAmount: 500
-	}),
-	brain: writable({
+	},
+	brain: {
 		sensorCount: 5,
 		sensorLength: 200,
 		sensorSpread: Math.PI / 2,
 		minFitness: -400
-	}),
-	controls: writable({
+	},
+	controls: {
 		showNetwork: true,
 		cameraFocus: 0,
 		playerControls: false,
@@ -27,7 +79,14 @@ export const config = {
 		carTurnSpeed: 0.5,
 		carBreakStrength: 0.4,
 		friction: 0.04
-	})
+	}
+}
+
+export const config = {
+	simulation: writable<CONFIG.simulation>(configDefaults.simulation),
+	master: writable<CONFIG.master>(configDefaults.master),
+	brain: writable<CONFIG.brain>(configDefaults.brain),
+	controls: writable<CONFIG.controls>(configDefaults.controls)
 }
 
 export const controlsHelpers = {
