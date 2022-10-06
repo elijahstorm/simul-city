@@ -1,18 +1,17 @@
 <script lang="ts">
-	import Icon from "@iconify/svelte"
-
-	export let icon: string = "typcn:edit"
-	export let width: string = "20px"
 	export let callback: VoidFunction
 </script>
 
 <button on:click={callback}>
-	<Icon {icon} {width} />
+	<slot />
 </button>
 
 <style>
 	button {
 		padding: 0.5rem 0.75rem;
+		width: max-content;
+		min-width: 56px;
+		height: 56px;
 		border-radius: 0.4rem;
 		border: 1px solid #555;
 		transition: 0.7s ease;

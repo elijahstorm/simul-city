@@ -35,10 +35,9 @@ const read = (): string | null => {
 	}
 }
 
-export const storeLocally = (network: FitnessResults | null) =>
-	network == null ? true : save(network)
+export const storeLocally = (network: FitnessResults) => save(network)
 
-export const storeCloud = (network: FitnessResults | null) => true
+export const storeCloud = (network: FitnessResults) => true
 
 const readLocally = () => JSON.parse(read() ?? 'null') as FitnessResults | null
 
