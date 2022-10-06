@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { Mesh, Object3DInstance } from '@threlte/core'
 	import { AutoColliders } from '@threlte/rapier'
-	import { GridHelper } from 'three'
-	import { BoxGeometry, MeshStandardMaterial } from 'three'
+	import { BoxGeometry, GridHelper, MeshStandardMaterial } from 'three'
 </script>
 
 <Object3DInstance object={new GridHelper(150, 15)} position={{ y: 0.001 }} />
