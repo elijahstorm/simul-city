@@ -5,40 +5,7 @@
 	import GlassyButton from '$lib/UI/Widgets/GlassyButton.svelte'
 	import { fly } from 'svelte/transition'
 	import { base } from '$app/paths'
-
-	let isClosed = true
-
-	const toggle = () => (isClosed = !isClosed)
-
-	const Controls = {
-		add: {
-			text: 'View with controls',
-			action: () => {
-				if (browser) goto(`${window.location.href}controls`)
-			}
-		},
-		remove: {
-			text: 'Turn off controls',
-			action: () => {
-				if (browser) goto(window.location.href.replace('/controls', ''))
-			}
-		}
-	}
-
-	const RenderStyle = {
-		twoDim: {
-			text: 'Show in TopDown simple style',
-			action: () => {
-				if (browser) goto(window.location.href.replace('3d', '2d'))
-			}
-		},
-		threeDim: {
-			text: 'Render in 3D',
-			action: () => {
-				if (browser) goto(window.location.href.replace('2d', '3d'))
-			}
-		}
-	}
+	import { onMount } from 'svelte'
 
 	const baseButtons = [
 		{
@@ -55,17 +22,53 @@
 		}
 	]
 
+	let isClosed = true
+	let href = ''
 	let buttons = baseButtons
+
+	onMount(() => {
+		href = window.location.href
+	})
+
+	$: Controls = {
+		add: {
+			text: 'View with controls',
+			action: () => {
+				if (browser) goto(`${href}controls`)
+			}
+		},
+		remove: {
+			text: 'Turn off controls',
+			action: () => {
+				if (browser) goto(href.replace('/controls', ''))
+			}
+		}
+	}
+
+	$: RenderStyle = {
+		twoDim: {
+			text: 'Show in TopDown simple style',
+			action: () => {
+				if (browser) goto(href.replace('3d', '2d'))
+			}
+		},
+		threeDim: {
+			text: 'Render in 3D',
+			action: () => {
+				if (browser) goto(href.replace('2d', '3d'))
+			}
+		}
+	}
 
 	$: {
 		isClosed
 		buttons = baseButtons.slice()
-		if (window.location.href.includes('3d')) {
+		if (href.includes('3d')) {
 			buttons.push(RenderStyle.twoDim)
 		} else {
 			buttons.push(RenderStyle.threeDim)
 		}
-		if (window.location.href.includes('controls')) {
+		if (href.includes('controls')) {
 			buttons.push(Controls.remove)
 		} else {
 			buttons.push(Controls.add)
@@ -76,6 +79,8 @@
 		action()
 		isClosed = true
 	}
+
+	const toggle = () => (isClosed = !isClosed)
 </script>
 
 <section>

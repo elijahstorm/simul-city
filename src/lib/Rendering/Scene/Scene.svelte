@@ -1,32 +1,12 @@
 <script lang="ts">
 	import { base } from '$app/paths'
-	import {
-		DirectionalLight,
-		Mesh,
-		Object3DInstance,
-		PerspectiveCamera,
-		useLoader,
-		useThrelte
-	} from '@threlte/core'
+	import { DirectionalLight, Mesh, Object3DInstance, PerspectiveCamera } from '@threlte/core'
 	import { HTML, useGltf } from '@threlte/extras'
 	import { AutoColliders, RigidBody } from '@threlte/rapier'
-	import { onDestroy } from 'svelte'
-	import { BoxGeometry, EquirectangularReflectionMapping, MeshStandardMaterial } from 'three'
-	import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+	import { BoxGeometry, MeshStandardMaterial } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import Car from '../Car/Car.svelte'
 	import Ground from '../Car/Ground.svelte'
-
-	const rgbeLoader = useLoader(RGBELoader, () => new RGBELoader())
-	const { scene, invalidate } = useThrelte()
-	const texture = rgbeLoader.load('/hdr/shanghai_riverside_1k.hdr', (texture) => {
-		texture.mapping = EquirectangularReflectionMapping
-		invalidate('texture loaded')
-	})
-	scene.environment = texture
-	onDestroy(() => {
-		texture.dispose()
-	})
 
 	const { gltf } = useGltf(`${base}/models/loop/loop.glb`)
 </script>
