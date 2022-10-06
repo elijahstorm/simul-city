@@ -3,7 +3,7 @@ import { polygon, collide, combine } from './shape'
 import { applyForce, worldWrap } from './movement'
 import { sense } from '../Sensor.ts/sensor'
 import { config } from '$lib/stores'
-import { destinationAngleAccuracy, distanceFromDestination } from '../Sensor.ts/destination'
+import { destinationAngleAccuracy, updatePath } from '../Sensor.ts/destination'
 
 let CAR_FOCUS = 0
 config.controls.subscribe(({ cameraFocus }) => {
@@ -19,6 +19,7 @@ export const updateCars = (world: World) => (cars: Car[]) =>
 					polygon,
 					collide(combine(car, world.generatedMap.borders, cars)),
 					kill(car),
+					updatePath,
 					rewardSpeed,
 					rewardAccuracy
 			  )
@@ -31,6 +32,22 @@ export const sensors =
 
 export const controlCars = (world: World) => (actions: NetworkActions) =>
 	actions.map(({ car, action }) => pipe(action, applyForce(car.box), worldWrap(world.size)))
+
+const kill = (car: Car) => (crash: boolean) => {
+	crash ? (car.performace -= Math.abs(car.box.physics?.momentum.magnitude ?? 0)) * 30 : null
+	car.dead = crash
+	return car
+}
+
+const rewardSpeed = (car: Car) => {
+	car.performace += (car.box.physics?.momentum.magnitude ?? 0) * destinationAngleAccuracy(car) - 1
+	return car
+}
+
+const rewardAccuracy = (car: Car) => {
+	// car.performace += distanceFromDestination(car) < Math.max(car.box.width, car.box.height) ? 1 : 0
+	return car
+}
 
 let MIN_FITNESS = 0
 config.brain.subscribe(({ minFitness }) => {
@@ -57,19 +74,3 @@ export const drawCars = (cars: Car[]) => (ctx: ContextProp) =>
 
 		return ctx
 	})[0]
-
-const kill = (car: Car) => (crash: boolean) => {
-	crash ? (car.performace -= Math.abs(car.box.physics?.momentum.magnitude ?? 0)) * 30 : null
-	car.dead = crash
-	return car
-}
-
-const rewardSpeed = (car: Car) => {
-	car.performace += (car.box.physics?.momentum.magnitude ?? 0) * destinationAngleAccuracy(car) - 1
-	return car
-}
-
-const rewardAccuracy = (car: Car) => {
-	// car.performace += distanceFromDestination(car) < Math.max(car.box.width, car.box.height) ? 1 : 0
-	return car
-}

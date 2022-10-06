@@ -6,6 +6,7 @@ type Car = {
 	brain: AI
 	fitness: number
 	performace: number
+	path: XYPosition[]
 }
 
 type CarActions = {

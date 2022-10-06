@@ -1,17 +1,27 @@
 const TWO_PI = 2 * Math.PI
 
-const diverganceFromCorrectAngle = (car: Car) =>
-	Math.atan((car.destination[0] - car.box.x) / (car.destination[1] - car.box.y)) -
-	(car.box.y < car.destination[1] ? Math.PI : 0)
+export const updatePath = (car: Car) => {
+	car.path = car.path.filter((path) => distance([car.box.x, car.box.y], path) > 100)
+	return car
+}
+
+const diverganceFromCorrectAngle = (car: Car) => {
+	const destination = car.path[0]
+	if (!destination) return 0
+
+	return (
+		Math.atan((destination[0] - car.box.x) / (destination[1] - car.box.y)) -
+		(car.box.y < destination[1] ? Math.PI : 0)
+	)
+}
 
 export const destinationAngleAccuracy = (car: Car) =>
 	Math.abs(((diverganceFromCorrectAngle(car) + car.box.angle + TWO_PI) % TWO_PI) / TWO_PI - 0.5) *
 		4 -
 	1
 
-export const distanceFromDestination = (car: Car) => {
-	return Math.sqrt((car.destination[0] - car.box.x) ** 2 + (car.destination[1] - car.box.y) ** 2)
-}
+export const distanceFromDestination = (car: Car) =>
+	distance(car.destination, [car.box.x, car.box.y])
 
 export const drawDestinationPath = (car: Car) => (ctx: ContextProp) => {
 	const [x, y] = car.destination
@@ -39,20 +49,14 @@ export const drawDestinationPath = (car: Car) => (ctx: ContextProp) => {
 	ctx.lineTo(...end)
 	ctx.stroke()
 
-	const angleMe = -car.box.angle
-
-	const startMe: XYPosition = [car.box.x, car.box.y]
-	const endMe: XYPosition = [
-		car.box.x - Math.sin(angleMe) * 100,
-		car.box.y - Math.cos(angleMe) * 100
-	]
-
 	ctx.strokeStyle = 'blue'
-	ctx.beginPath()
 	ctx.setLineDash([9, 3])
-	ctx.moveTo(...startMe)
-	ctx.lineTo(...endMe)
+	ctx.beginPath()
+	car.path.forEach((path, i) => (i === 0 ? ctx.moveTo(...path) : ctx.lineTo(...path)))
 	ctx.stroke()
 
 	return ctx
 }
+
+const distance = (a: XYPosition, b: XYPosition) =>
+	Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)

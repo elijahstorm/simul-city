@@ -28,7 +28,8 @@ export const configDefaults: {
 				color: '#000',
 				dead: true,
 				fitness: 0,
-				performace: 0
+				performace: 0,
+				path: []
 			}
 		],
 		world: {
@@ -39,6 +40,7 @@ export const configDefaults: {
 						rotate: 0
 					}
 				],
+				connections: [[false, false, false, false]],
 				borders: [
 					[
 						[
@@ -56,11 +58,11 @@ export const configDefaults: {
 			backgroundSaved: false
 		},
 		destroyed: false,
-		layers: [6, 4, 5]
+		layers: [6, 4, 6, 5]
 	},
 	master: {
-		gridSize: 35,
-		carAmount: 500
+		gridSize: 5,
+		carAmount: 20
 	},
 	brain: {
 		sensorCount: 5,

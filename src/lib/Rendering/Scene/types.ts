@@ -3,4 +3,4 @@ type Simulation = {
 	world: World
 }
 
-type SimulationInput = Simulation | {} | undefined | null
+type SimulationInput = Simulation | undefined | null

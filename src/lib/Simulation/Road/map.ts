@@ -93,7 +93,10 @@ const reconstructPath = (
 		? path
 		: reconstructPath(cameFrom, cameFrom[current], start, [cameFrom[current], ...path])
 
-const tileXY = (tile: number, width: number): XYPosition => [tile % width, Math.floor(tile / width)]
+export const tileXY = (tile: number, width: number): XYPosition => [
+	tile % width,
+	Math.floor(tile / width)
+]
 
 const heuristic = (a: XYPosition, b: XYPosition) => Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1])
 

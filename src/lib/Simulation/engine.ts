@@ -15,6 +15,7 @@ import {
 	validateIfImproved
 } from '$lib/Simulation/Ai/storage'
 import { mutate } from '$lib/Simulation/Ai/mutate'
+import { astar, tileXY } from './Road/map'
 
 const { simulation, master } = config
 
@@ -33,12 +34,37 @@ const createNewCar = (
 	previousBestBrain: AI | null
 ) => {
 	const gridSize = Number(MASTER.gridSize)
-	const tileX = Math.floor(Math.random() * gridSize)
-	const tileY = Math.floor(Math.random() * gridSize)
 
-	const tile = generatedMap.map[tileX + tileY * gridSize]
+	const available = generatedMap.connections
+		.map((connection, tile) => ({ connection, tile }))
+		.filter((tile) => tile.connection.includes(true))
 
-	const angle = tile.rotate == 1 ? Math.PI / 2 : 0
+	const startTileIndex = Math.floor(Math.random() * available.length)
+
+	const start = available[startTileIndex].tile
+
+	const longestPath = available
+		.map((a) => ({ ...a, path: astar({ map: generatedMap.connections, start, end: a.tile }) }))
+		.reduce((best, cur) => (best.path.length > cur.path.length ? best : cur))
+	const end = longestPath.tile
+	const path = longestPath.path.map(
+		(path) => tileXY(path, gridSize).map((v) => v * 200 + 100) as XYPosition
+	)
+
+	const [tileX, tileY] = tileXY(start, gridSize)
+	const destination = tileXY(end, gridSize).map((v) => v * 200 + 100) as XYPosition
+
+	const direction =
+		((longestPath.path[1] + gridSize + 1) % generatedMap.connections.length) -
+		((longestPath.path[0] + gridSize + 1) % generatedMap.connections.length)
+	const angle =
+		direction === 1
+			? Math.PI / 2
+			: direction === gridSize
+			? Math.PI
+			: direction === -gridSize
+			? 0
+			: (3 * Math.PI) / 2
 
 	return {
 		brain: pipe(
@@ -63,14 +89,12 @@ const createNewCar = (
 				mass: Math.random() * 5 + 5
 			}
 		},
-		destination: [
-			TILE_SIZE * ((Math.floor(tileX + gridSize * 0.5) % gridSize) + 0.5),
-			TILE_SIZE * ((Math.floor(tileY + gridSize * 0.5) % gridSize) + 0.5)
-		] as XYPosition,
+		destination,
 		color: colors[Math.floor(Math.random() * colors.length)],
 		dead: false,
 		fitness: 0,
-		performace: 0
+		performace: 0,
+		path
 	}
 }
 
