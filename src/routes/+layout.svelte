@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { base } from '$app/paths'
 	import FabMenu from '$lib/UI/Widgets/FABMenu.svelte'
+	import Loader from '$lib/UI/Widgets/Loader.svelte'
+	import { navigating } from '$app/stores'
 </script>
 
 <svelte:head>
@@ -15,4 +17,22 @@
 
 <slot />
 
+{#if $navigating}
+	<div>
+		<Loader />
+	</div>
+{/if}
+
 <FabMenu />
+
+<style>
+	div {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		display: grid;
+		place-items: center;
+	}
+</style>

@@ -5,8 +5,8 @@
 	import { AutoColliders, RigidBody } from '@threlte/rapier'
 	import { BoxGeometry, MeshStandardMaterial } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
-	import Car from '../Car/Car.svelte'
-	import Ground from '../Car/Ground.svelte'
+	import Car from '$lib/Rendering/Car/Car.svelte'
+	import Ground from '$lib/Rendering/Car/Ground.svelte'
 
 	const { gltf } = useGltf(`${base}/models/loop/loop.glb`)
 </script>

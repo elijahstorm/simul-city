@@ -6,6 +6,7 @@
 	import { fly } from 'svelte/transition'
 	import { base } from '$app/paths'
 	import { onMount } from 'svelte'
+	import { page } from '$app/stores'
 
 	const baseButtons = [
 		{
@@ -23,24 +24,19 @@
 	]
 
 	let isClosed = true
-	let href = ''
 	let buttons = baseButtons
-
-	onMount(() => {
-		href = window.location.href
-	})
 
 	$: Controls = {
 		add: {
 			text: 'View with controls',
 			action: () => {
-				if (browser) goto(`${href}controls`)
+				if (browser) goto(`${base}/${$page.routeId}/controls`)
 			}
 		},
 		remove: {
 			text: 'Turn off controls',
 			action: () => {
-				if (browser) goto(href.replace('/controls', ''))
+				if (browser) goto(`${base}/${$page.routeId?.replace('/controls', '')}`)
 			}
 		}
 	}
@@ -49,13 +45,13 @@
 		twoDim: {
 			text: 'Show in TopDown simple style',
 			action: () => {
-				if (browser) goto(href.replace('3d', '2d'))
+				if (browser) goto(`${base}/${$page.routeId?.replace('3d', '2d')}`)
 			}
 		},
 		threeDim: {
 			text: 'Render in 3D',
 			action: () => {
-				if (browser) goto(href.replace('2d', '3d'))
+				if (browser) goto(`${base}/${$page.routeId?.replace('2d', '3d')}`)
 			}
 		}
 	}
@@ -63,12 +59,12 @@
 	$: {
 		isClosed
 		buttons = baseButtons.slice()
-		if (href.includes('3d')) {
+		if ($page.routeId?.includes('3d')) {
 			buttons.push(RenderStyle.twoDim)
 		} else {
 			buttons.push(RenderStyle.threeDim)
 		}
-		if (href.includes('controls')) {
+		if ($page.routeId?.includes('controls')) {
 			buttons.push(Controls.remove)
 		} else {
 			buttons.push(Controls.add)
