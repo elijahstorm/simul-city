@@ -34,6 +34,7 @@ const render = (possibilities: Connection[]): RenderConfig[] =>
 
 export const waveCollapseGenerate = (grid: number): MapGeneration =>
 	pipe(possibilities(grid), reduceEntropy(grid), (connections) => ({
+		connections,
 		map: render(connections),
 		borders: connections.reduce((p, c) => [...p, ...walls(c)], [] as MapBorder)
 	}))

@@ -8,7 +8,14 @@ type Possibilities = {
 
 type MapGeneration = {
 	map: RenderConfig[]
+	connections: Connection[]
 	borders: MapBorder
 }
 
 type MapBorder = Wall[][]
+
+type AstarProps = {
+	map: Connection[]
+	start: number
+	end: number
+}

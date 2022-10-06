@@ -1,5 +1,3 @@
-import { fitness } from '../Ai/reward'
-
 const TWO_PI = 2 * Math.PI
 
 const diverganceFromCorrectAngle = (car: Car) =>
@@ -7,8 +5,8 @@ const diverganceFromCorrectAngle = (car: Car) =>
 	(car.box.y < car.destination[1] ? Math.PI : 0)
 
 export const destinationAngleAccuracy = (car: Car) =>
-	4 *
-		Math.abs(((diverganceFromCorrectAngle(car) + car.box.angle + TWO_PI) % TWO_PI) / TWO_PI - 0.5) -
+	Math.abs(((diverganceFromCorrectAngle(car) + car.box.angle + TWO_PI) % TWO_PI) / TWO_PI - 0.5) *
+		4 -
 	1
 
 export const distanceFromDestination = (car: Car) => {
@@ -55,12 +53,6 @@ export const drawDestinationPath = (car: Car) => (ctx: ContextProp) => {
 	ctx.moveTo(...startMe)
 	ctx.lineTo(...endMe)
 	ctx.stroke()
-
-	// ctx.font = 20 + 'px Arial'
-	// ctx.beginPath()
-	// ctx.fillStyle = 'black'
-	// ctx.fillText(`       p:${Math.floor(car.performace)},f:${fitness(car)}`, car.box.x, car.box.y)
-	// ctx.fill()
 
 	return ctx
 }
