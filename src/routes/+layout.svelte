@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { base } from '$app/paths'
+	import FabMenu from '$lib/UI/Widgets/FABMenu.svelte'
 </script>
 
 <svelte:head>
@@ -13,3 +14,5 @@
 </svelte:head>
 
 <slot />
+
+<FabMenu />

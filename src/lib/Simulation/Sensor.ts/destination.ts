@@ -5,7 +5,7 @@ export const updatePath = (car: Car) => {
 	return car
 }
 
-const diverganceFromCorrectAngle = (car: Car) => {
+const diverganceFromPath = (car: Car) => {
 	const destination = car.path[0]
 	if (!destination) return 0
 
@@ -16,9 +16,10 @@ const diverganceFromCorrectAngle = (car: Car) => {
 }
 
 export const destinationAngleAccuracy = (car: Car) =>
-	Math.abs(((diverganceFromCorrectAngle(car) + car.box.angle + TWO_PI) % TWO_PI) / TWO_PI - 0.5) *
-		4 -
-	1
+	Math.abs(((diverganceFromPath(car) + car.box.angle + TWO_PI) % TWO_PI) / TWO_PI - 0.5) * 4 - 1
+
+const distance = (a: XYPosition, b: XYPosition) =>
+	Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
 export const distanceFromDestination = (car: Car) =>
 	distance(car.destination, [car.box.x, car.box.y])
@@ -37,7 +38,7 @@ export const drawDestinationPath = (car: Car) => (ctx: ContextProp) => {
 	ctx.lineTo(x, y)
 	ctx.stroke()
 
-	const angle = diverganceFromCorrectAngle(car)
+	const angle = diverganceFromPath(car)
 
 	const start: XYPosition = [car.box.x, car.box.y]
 	const end: XYPosition = [car.box.x - Math.sin(angle) * 100, car.box.y - Math.cos(angle) * 100]
@@ -57,6 +58,3 @@ export const drawDestinationPath = (car: Car) => (ctx: ContextProp) => {
 
 	return ctx
 }
-
-const distance = (a: XYPosition, b: XYPosition) =>
-	Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)

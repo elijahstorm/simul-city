@@ -88,6 +88,7 @@
 	section:nth-child(2n + 1) {
 		left: unset;
 		right: 0;
+		bottom: 0;
 	}
 
 	div {
