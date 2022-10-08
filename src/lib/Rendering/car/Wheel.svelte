@@ -10,7 +10,7 @@
 	import type { BufferGeometry, Material } from 'three'
 	import { CylinderGeometry, MeshStandardMaterial } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
-	import { useWasd } from '../Controllers/useWasd'
+	import { useArrows } from '../Controllers/useArrows'
 
 	export let position: Position | undefined = undefined
 	export let parentRigidBody: RapierRigidBody | undefined = undefined
@@ -20,7 +20,7 @@
 	export let geometry: BufferGeometry | undefined
 	export let material: Material | Material[] | undefined
 
-	const wasd = useWasd()
+	const wasd = useArrows()
 
 	let isSpaceDown = false
 

@@ -1,11 +1,8 @@
 <script lang="ts">
-	import { logs, config, controlsHelpers } from '$lib/stores'
+	import { logs, config, controlsHelpers, configDefaults } from '$lib/stores'
 
 	const { master, controls, brain } = config
 
-	type Key = keyof typeof controlsHelpers
-
-	const keys: Key[] = Object.keys(controlsHelpers) as Key[]
 	const storeReference = {
 		master,
 		brain,
@@ -17,16 +14,15 @@
 		controls: $controls
 	}
 
-	const update = (key: Key) => (e: Event) => {
-		const type = controlsHelpers[key].type
-		const what =
-			type == 'number'
-				? Number(e.target?.value)
-				: type === 'checkbox'
-				? e.target?.checked
-				: e.target?.value
+	$: configSections = Object.keys(valueReference) as [CONFIG.Sections]
 
-		storeReference[controlsHelpers[key].where].update((v) => ({
+	const update = (where: CONFIG.Sections, key: CONFIG.Controls) => (e: InputEvent) => {
+		const target = e.target as HTMLInputElement
+		const type = controlsHelpers[where][key].type
+		const what =
+			type === 'number' ? Number(target.value) : type === 'checkbox' ? target.checked : target.value
+
+		storeReference[controlsHelpers[where][key].where].update((v) => ({
 			...v,
 			[key]: what
 		}))
@@ -47,19 +43,21 @@
 </section>
 
 <section>
-	{#each Object.keys(valueReference) as where}
+	{#each configSections as where}
 		<p class="header">{where}</p>
-		{#each keys as key}
-			{#if controlsHelpers[key].where == where}
+		{#each Object.keys(valueReference[where]) as key}
+			{#if controlsHelpers[where][key]?.where === where}
 				<div>
 					<p>
 						{key}:
 					</p>
 					<input
 						value={valueReference[where][key]}
-						checked={controlsHelpers[key].type == 'checkbox' ? valueReference[where][key] : null}
-						on:change={update(key)}
-						{...controlsHelpers[key]}
+						checked={controlsHelpers[where][key].type == 'checkbox'
+							? valueReference[where][key]
+							: null}
+						on:change={update(where, key)}
+						{...controlsHelpers[where][key]}
 					/>
 				</div>
 			{/if}

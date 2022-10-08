@@ -26,6 +26,37 @@ namespace CONFIG {
 		carBreakStrength: number
 		friction: number
 	}
+
+	export type NumberInput = {
+		type: 'number'
+		min: number
+		max: number
+		step: number
+	}
+	export type BooleanInput = {
+		type: 'checkbox'
+	}
+
+	export type Sections = 'master' | 'brain' | 'controls'
+	export type Controls = keyof master | keyof brain | keyof controls
+
+	export type Helper = {
+		master: {
+			[key: string]: {
+				where: 'master'
+			} & (NumberInput | BooleanInput)
+		}
+		brain: {
+			[key: string]: {
+				where: 'brain'
+			} & (NumberInput | BooleanInput)
+		}
+		controls: {
+			[key: string]: {
+				where: 'controls'
+			} & (NumberInput | BooleanInput)
+		}
+	}
 }
 
 type RGB = `rgb(${number}, ${number}, ${number})`
