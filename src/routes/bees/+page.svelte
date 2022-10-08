@@ -4,5 +4,7 @@
 </script>
 
 <WorldViewer>
-	<Scene />
+	<div slot="scene">
+		<Scene />
+	</div>
 </WorldViewer>
