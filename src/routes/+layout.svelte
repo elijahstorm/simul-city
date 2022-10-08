@@ -19,7 +19,9 @@
 
 {#if $navigating}
 	<div>
-		<Loader />
+		<div class="loading-box">
+			<Loader />
+		</div>
 	</div>
 {/if}
 
@@ -32,7 +34,14 @@
 		right: 0;
 		bottom: 0;
 		left: 0;
-		display: grid;
-		place-items: center;
+	}
+	.loading-box {
+		margin: auto;
+		height: min-content;
+		width: min-content;
+		padding: 2rem;
+		background: var(--bg);
+		border-radius: 0.5rem;
+		border: 1px var(--text) solid;
 	}
 </style>

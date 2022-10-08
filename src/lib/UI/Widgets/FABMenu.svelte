@@ -3,9 +3,8 @@
 	import { goto } from '$app/navigation'
 	import Burger from '$lib/UI/Widgets/Burger.svelte'
 	import GlassyButton from '$lib/UI/Widgets/GlassyButton.svelte'
-	import { fly } from 'svelte/transition'
+	import { fade, fly } from 'svelte/transition'
 	import { base } from '$app/paths'
-	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 
 	const baseButtons = [
@@ -79,21 +78,26 @@
 	const toggle = () => (isClosed = !isClosed)
 </script>
 
-<section>
-	<div class="burger">
-		<GlassyButton callback={toggle}>
-			<Burger {isClosed} />
-		</GlassyButton>
-	</div>
+{#if $page.routeId != ''}
+	<section in:fade out:fade>
+		<div class="burger">
+			<GlassyButton callback={toggle}>
+				<Burger {isClosed} />
+			</GlassyButton>
+		</div>
 
-	{#if !isClosed}
-		{#each buttons as button, index}
-			<div in:fly={{ y: -100, delay: 40 * index }} out:fly={{ y: -100, x: 100, delay: 20 * index }}>
-				<GlassyButton callback={() => perform(button.action)}>{button.text}</GlassyButton>
-			</div>
-		{/each}
-	{/if}
-</section>
+		{#if !isClosed}
+			{#each buttons as button, index}
+				<div
+					in:fly={{ y: -100, delay: 40 * index }}
+					out:fly={{ y: -100, x: 100, delay: 20 * index }}
+				>
+					<GlassyButton callback={() => perform(button.action)}>{button.text}</GlassyButton>
+				</div>
+			{/each}
+		{/if}
+	</section>
+{/if}
 
 <style>
 	section {
