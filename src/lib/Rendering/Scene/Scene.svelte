@@ -52,7 +52,7 @@
 	</AutoColliders>
 {/if}
 
-<Car position={{ y: 5, x: 70 }}>
+<Car position={{ y: 0.002, x: 70 }}>
 	<PerspectiveCamera
 		rotation={{ x: -90 * DEG2RAD, z: 90 * DEG2RAD, y: 70 * DEG2RAD }}
 		position={{ y: 5, x: 10 }}

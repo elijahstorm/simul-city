@@ -12,7 +12,7 @@
 <script lang="ts">
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
 	import { Group, Mesh, useFrame, type Position, type Rotation } from '@threlte/core'
-	import { HTML, useGltf } from '@threlte/extras'
+	import { HTML, useGltf, GLTF } from '@threlte/extras'
 	import { Collider, RigidBody, useRapier } from '@threlte/rapier'
 	import { getContext, setContext } from 'svelte'
 	import { BoxGeometry, MeshStandardMaterial, Vector3, Mesh as ThreeMesh } from 'three'
@@ -45,7 +45,7 @@
 		'car006_w004'
 	] as const
 	type Components = typeof carComponents[number]
-	const { gltf } = useGltf<Components, 'Material_MR'>(`${base}/models/city/glb/car-6.glb`)
+	const { gltf } = useGltf<Components, 'Material_MR'>(`${base}/models/.old.city/glb/car-6.glb`)
 	const [carModel, wheelsFL, wheelsFR, wheelsBL, wheelsBR] = carComponents.map((name) =>
 		derived(gltf, (gltf) => {
 			if (!gltf || !gltf.nodes[name]) return
@@ -81,10 +81,13 @@
 		<Collider mass={1} shape={'cuboid'} args={[1.25, 0.4, 0.5]} />
 
 		<!-- CAR BODY MESH -->
-		<Mesh
+		<GLTF
 			castShadow
-			geometry={$carModel?.geometry ?? new BoxGeometry(2.5, 0.8, 1)}
-			material={$carModel?.material ?? new MeshStandardMaterial()}
+			receiveShadow
+			url={base + '/models/cars/2008/2008_baird_silver_coronet_taxicab/scene.gltf'}
+			rotation={{ y: 90 * DEG2RAD }}
+			scale={0.005}
+			position={{ y: -0.6 }}
 		/>
 
 		<slot />
@@ -95,7 +98,7 @@
 		</HTML>
 	</RigidBody>
 
-	<!-- FRONT AXLES -->
+	FRONT AXLES
 	<Axle
 		geometry={$wheelsFL?.geometry}
 		material={$wheelsFL?.material}

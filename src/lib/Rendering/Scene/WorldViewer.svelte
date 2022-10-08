@@ -6,7 +6,7 @@
 	import Engine from './Engine.svelte'
 
 	export let controls = false
-	export let input: SimulationInput
+	export let input: SimulationInput = null
 </script>
 
 <div class="wrapper">
@@ -16,7 +16,9 @@
 				<Debug depthTest={false} depthWrite={false} />
 			{/if}
 
-			<Scene />
+			<slot name="scene">
+				<Scene />
+			</slot>
 
 			<HTML slot="fallback" transform>
 				<p class="text-xs">
