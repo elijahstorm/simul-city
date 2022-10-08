@@ -9,7 +9,7 @@
 	import type { BufferGeometry, Material } from 'three'
 	import { clamp, DEG2RAD, mapLinear } from 'three/src/math/MathUtils'
 	import { useCar } from './Car.svelte'
-	import { useWasd } from './useWasd'
+	import { useWasd } from '../Controllers/useWasd'
 	import Wheel from './Wheel.svelte'
 
 	export let position: Position | undefined = undefined

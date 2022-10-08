@@ -19,9 +19,9 @@ export const updateCars = (world: World) => (cars: Car[]) =>
 					polygon,
 					collide(combine(car, world.generatedMap.borders, cars)),
 					kill(car),
-					updatePath,
 					rewardSpeed,
-					rewardAccuracy
+					rewardAccuracy,
+					updatePath
 			  )
 	)
 

@@ -10,7 +10,7 @@
 	import type { BufferGeometry, Material } from 'three'
 	import { CylinderGeometry, MeshStandardMaterial } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
-	import { useWasd } from './useWasd'
+	import { useWasd } from '../Controllers/useWasd'
 
 	export let position: Position | undefined = undefined
 	export let parentRigidBody: RapierRigidBody | undefined = undefined
