@@ -41,7 +41,7 @@
 		{ action: stop.up, delay: 2000 },
 		{
 			action: () => {
-				// if (browser) goto(`${base}/3d`)
+				if (browser) goto(`${base}/3d`)
 			},
 			delay: 5000
 		}
