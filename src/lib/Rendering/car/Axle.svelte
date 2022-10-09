@@ -6,10 +6,10 @@
 	import { Group, type Position } from '@threlte/core'
 	import { Collider, RigidBody, useFixedJoint, useRevoluteJoint } from '@threlte/rapier'
 	import { spring } from 'svelte/motion'
+	import type { Readable } from 'svelte/store'
 	import type { BufferGeometry, Material } from 'three'
 	import { clamp, DEG2RAD, mapLinear } from 'three/src/math/MathUtils'
 	import { useCar } from './Car.svelte'
-	import { useArrows } from '../Controllers/useArrows'
 	import Wheel from './Wheel.svelte'
 
 	export let position: Position | undefined = undefined
@@ -20,14 +20,14 @@
 	export let side: 'left' | 'right'
 	export let geometry: BufferGeometry | undefined
 	export let material: Material | Material[] | undefined
+	export let movement: Readable<MovementController>
 
 	let axleRigidBody: RapierRigidBody
 
-	const wasd = useArrows()
 	const { speed } = useCar()
 
-	const steeringAngle = spring(mapLinear(clamp($speed / 12, 0, 1), 0, 1, 1, 0.5) * $wasd.x * 15)
-	$: steeringAngle.set(mapLinear(clamp($speed / 12, 0, 1), 0, 1, 1, 0.5) * $wasd.x * 15)
+	const steeringAngle = spring(mapLinear(clamp($speed / 12, 0, 1), 0, 1, 1, 0.5) * $movement.x * 15)
+	$: steeringAngle.set(mapLinear(clamp($speed / 12, 0, 1), 0, 1, 1, 0.5) * $movement.x * 15)
 
 	const { joint, rigidBodyA, rigidBodyB } = isSteered
 		? useRevoluteJoint(anchor, {}, { y: 1 })
@@ -50,9 +50,10 @@
 	</RigidBody>
 
 	<Wheel
-		{isDriven}
 		{geometry}
 		{material}
+		{isDriven}
+		{movement}
 		anchor={{ z: side === 'left' ? 0.2 : -0.2 }}
 		position={{ z: side === 'left' ? 0.2 : -0.2 }}
 		parentRigidBody={axleRigidBody}

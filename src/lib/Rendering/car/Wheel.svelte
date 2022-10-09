@@ -7,10 +7,10 @@
 	import type { Position } from '@threlte/core'
 	import { Mesh } from '@threlte/core'
 	import { Collider, RigidBody, useRevoluteJoint } from '@threlte/rapier'
+	import type { Readable } from 'svelte/store'
 	import type { BufferGeometry, Material } from 'three'
 	import { CylinderGeometry, MeshStandardMaterial } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
-	import { useArrows } from '../Controllers/useArrows'
 
 	export let position: Position | undefined = undefined
 	export let parentRigidBody: RapierRigidBody | undefined = undefined
@@ -19,8 +19,7 @@
 	export let isDriven = false
 	export let geometry: BufferGeometry | undefined
 	export let material: Material | Material[] | undefined
-
-	const wasd = useArrows()
+	export let movement: Readable<MovementController>
 
 	let isSpaceDown = false
 
@@ -30,7 +29,7 @@
 	$: $joint?.configureMotorModel(
 		isDriven && isSpaceDown ? MotorModel.ForceBased : MotorModel.AccelerationBased
 	)
-	$: if (isDriven) $joint?.configureMotorVelocity(isSpaceDown ? 0 : $wasd.y * 1000, 10)
+	$: if (isDriven) $joint?.configureMotorVelocity(isSpaceDown ? 0 : $movement.y * 1000, 10)
 	$: $joint?.setContactsEnabled(false)
 
 	const onKeyDown = (e: KeyboardEvent) => {

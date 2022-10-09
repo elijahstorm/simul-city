@@ -7,6 +7,7 @@
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import Car from '$lib/Rendering/Car/Car.svelte'
 	import Ground from '$lib/Rendering/Car/Ground.svelte'
+	import { useArrows } from '../Controllers/useArrows'
 
 	const { gltf } = useGltf(`${base}/models/loop/loop.glb`)
 </script>
@@ -52,7 +53,7 @@
 	</AutoColliders>
 {/if}
 
-<Car position={{ y: 0.002, x: 70 }}>
+<Car position={{ y: 0.002, x: 70 }} movement={useArrows()}>
 	<PerspectiveCamera
 		rotation={{ x: -90 * DEG2RAD, z: 90 * DEG2RAD, y: 70 * DEG2RAD }}
 		position={{ y: 5, x: 10 }}

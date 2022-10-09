@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import { derived, writable, type Writable } from 'svelte/store'
+	import { derived, writable, type Readable, type Writable } from 'svelte/store'
 	type CarContext = {
 		speed: Writable<number>
 	}
@@ -11,11 +11,11 @@
 
 <script lang="ts">
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
-	import { Group, Mesh, useFrame, type Position, type Rotation } from '@threlte/core'
+	import { Group, useFrame, type Position, type Rotation } from '@threlte/core'
 	import { HTML, useGltf, GLTF } from '@threlte/extras'
 	import { Collider, RigidBody, useRapier } from '@threlte/rapier'
 	import { getContext, setContext } from 'svelte'
-	import { BoxGeometry, MeshStandardMaterial, Vector3, Mesh as ThreeMesh } from 'three'
+	import { Vector3, Mesh as ThreeMesh } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import Axle from './Axle.svelte'
 	import { onDestroy } from 'svelte'
@@ -23,6 +23,7 @@
 
 	export let position: Position | undefined = undefined
 	export let rotation: Rotation | undefined = undefined
+	export let movement: Readable<MovementController>
 
 	let parentRigidBody: RapierRigidBody
 
@@ -102,8 +103,9 @@
 	<Axle
 		geometry={$wheelsFL?.geometry}
 		material={$wheelsFL?.material}
-		side={'left'}
 		isSteered
+		side={'left'}
+		{movement}
 		{parentRigidBody}
 		position={{ x: -1.2, z: 0.8, y: -0.4 }}
 		anchor={{ x: -1.2, z: 0.8, y: -0.4 }}
@@ -111,8 +113,9 @@
 	<Axle
 		geometry={$wheelsFR?.geometry}
 		material={$wheelsFR?.material}
-		side={'right'}
 		isSteered
+		side={'right'}
+		{movement}
 		{parentRigidBody}
 		position={{ x: -1.2, z: -0.8, y: -0.4 }}
 		anchor={{ x: -1.2, z: -0.8, y: -0.4 }}
@@ -124,6 +127,7 @@
 		material={$wheelsBL?.material}
 		isDriven
 		side={'left'}
+		{movement}
 		{parentRigidBody}
 		position={{ x: 1.2, z: 0.8, y: -0.4 }}
 		anchor={{ x: 1.2, z: 0.8, y: -0.4 }}
@@ -133,6 +137,7 @@
 		material={$wheelsBR?.material}
 		isDriven
 		side={'right'}
+		{movement}
 		{parentRigidBody}
 		position={{ x: 1.2, z: -0.8, y: -0.4 }}
 		anchor={{ x: 1.2, z: -0.8, y: -0.4 }}

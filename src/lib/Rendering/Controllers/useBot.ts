@@ -1,6 +1,12 @@
-import { derived, get, writable } from 'svelte/store'
+import { derived, get, writable, type Readable } from 'svelte/store'
 
-export const useArrows = () => {
+export const useBot = (): [
+	Readable<MovementController>,
+	{
+		onKeyUp: (key: 'ArrowUp' | 'ArrowLeft' | 'ArrowRight' | 'ArrowDown') => void
+		onKeyDown: (key: 'ArrowUp' | 'ArrowLeft' | 'ArrowRight' | 'ArrowDown') => void
+	}
+] => {
 	const botControls = {
 		ArrowUp: false,
 		ArrowLeft: false,
