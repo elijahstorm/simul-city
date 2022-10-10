@@ -1,8 +1,8 @@
 <script lang="ts">
-	export let isClosed = true
+	export let open = true
 </script>
 
-<span class="burger burger-swipe" class:isClosed />
+<span class="burger burger-swipe" class:open />
 
 <style>
 	.burger {
@@ -42,7 +42,7 @@
 		transition: 0.2s ease-in-out;
 	}
 
-	.burger-swipe.isClosed {
+	.burger-swipe.open {
 		transform: translateX(-50px);
 	}
 
@@ -50,15 +50,15 @@
 		background: #f9f9f9;
 	}
 
-	.burger.isClosed {
+	.burger.open {
 		background: #f9f9f900;
 	}
 
-	.burger-swipe.burger-swipe.isClosed::before {
+	.burger-swipe.burger-swipe.open::before {
 		transform: rotate(-45deg) translate(30px, 40px);
 	}
 
-	.burger-swipe.burger-swipe.isClosed::after {
+	.burger-swipe.burger-swipe.open::after {
 		transform: rotate(45deg) translate(30px, -42px);
 	}
 </style>

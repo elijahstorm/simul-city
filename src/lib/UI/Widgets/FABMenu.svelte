@@ -82,7 +82,7 @@
 	<section in:fade out:fade>
 		<div class="burger">
 			<GlassyButton callback={toggle}>
-				<Burger {isClosed} />
+				<Burger open={!isClosed} />
 			</GlassyButton>
 		</div>
 
