@@ -18,8 +18,8 @@
 	export let isSteered: boolean = false
 	export let isDriven: boolean = false
 	export let side: 'left' | 'right'
-	export let geometry: BufferGeometry | undefined
-	export let material: Material | Material[] | undefined
+	export let geometry: BufferGeometry | undefined = undefined
+	export let material: Material | Material[] | undefined = undefined
 	export let movement: Readable<MovementController>
 
 	let axleRigidBody: RapierRigidBody

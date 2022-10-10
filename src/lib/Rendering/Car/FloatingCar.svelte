@@ -23,9 +23,6 @@
 
 	export let position: Position | undefined = undefined
 	export let rotation: Rotation | undefined = undefined
-	export let movement: Readable<MovementController>
-
-	let parentRigidBody: RapierRigidBody
 
 	const carContext = {
 		speed: writable(0)
@@ -38,11 +35,22 @@
 	const { world } = useRapier()
 	const v3 = new Vector3()
 
-	useFrame(() => {
-		const s = parentRigidBody.linvel()
-		v3.set(s.x, s.y, s.z)
-		carContext.speed.set(v3.length())
-	})
+	const carComponents = [
+		'car006',
+		'car006_w001',
+		'car006_w002',
+		'car006_w003',
+		'car006_w004'
+	] as const
+	type Components = typeof carComponents[number]
+	const { gltf } = useGltf<Components, 'Material_MR'>(`${base}/models/.old.city/glb/car-6.glb`)
+	const [carModel, wheelsFL, wheelsFR, wheelsBL, wheelsBR] = carComponents.map((name) =>
+		derived(gltf, (gltf) => {
+			if (!gltf || !gltf.nodes[name]) return
+			return gltf.nodes[name] as ThreeMesh
+		})
+	)
+
 
 	const initialIterations = {
 		maxStabilizationIterations: world.maxStabilizationIterations,
@@ -62,60 +70,22 @@
 </script>
 
 <Group {position} {rotation}>
-	<RigidBody bind:rigidBody={parentRigidBody} canSleep={false}>
-		<Collider mass={1} shape={'cuboid'} args={[1.25, 0.4, 0.5]} />
+	<Collider mass={1} shape={'cuboid'} args={[1.25, 0.4, 0.5]} />
 
-		<!-- CAR BODY MESH -->
-		<GLTF
-			castShadow
-			receiveShadow
-			url={base + '/models/cars/2008/2008_baird_silver_coronet_taxicab/scene.gltf'}
-			rotation={{ y: 90 * DEG2RAD }}
-			scale={0.005}
-			position={{ y: -0.6 }}
-		/>
-
-		<slot />
-		<HTML rotation={{ y: 90 * DEG2RAD }} transform position={{ x: 3 }}>
-			<p class="text-xs text-black">
-				{($speed * 3.6).toFixed(0)} km/h
-			</p>
-		</HTML>
-	</RigidBody>
-
-	FRONT AXLES
-	<Axle
-		isSteered
-		side={'left'}
-		{movement}
-		{parentRigidBody}
-		position={{ x: -1.2, z: 0.8, y: -0.4 }}
-		anchor={{ x: -1.2, z: 0.8, y: -0.4 }}
-	/>
-	<Axle
-		isSteered
-		side={'right'}
-		{movement}
-		{parentRigidBody}
-		position={{ x: -1.2, z: -0.8, y: -0.4 }}
-		anchor={{ x: -1.2, z: -0.8, y: -0.4 }}
+	<!-- CAR BODY MESH -->
+	<GLTF
+		castShadow
+		receiveShadow
+		url={base + '/models/cars/2008/2008_baird_silver_coronet_taxicab/scene.gltf'}
+		rotation={{ y: 90 * DEG2RAD }}
+		scale={0.005}
+		position={{ y: -0.6 }}
 	/>
 
-	<!-- BACK AXLES -->
-	<Axle
-		isDriven
-		side={'left'}
-		{movement}
-		{parentRigidBody}
-		position={{ x: 1.2, z: 0.8, y: -0.4 }}
-		anchor={{ x: 1.2, z: 0.8, y: -0.4 }}
-	/>
-	<Axle
-		isDriven
-		side={'right'}
-		{movement}
-		{parentRigidBody}
-		position={{ x: 1.2, z: -0.8, y: -0.4 }}
-		anchor={{ x: 1.2, z: -0.8, y: -0.4 }}
-	/>
+	<slot />
+	<HTML rotation={{ y: 90 * DEG2RAD }} transform position={{ x: 3 }}>
+		<p class="text-xs text-black">
+			{($speed * 3.6).toFixed(0)} km/h
+		</p>
+	</HTML>
 </Group>

@@ -17,8 +17,8 @@
 	export let anchor: Position
 	let collider: RapierCollider
 	export let isDriven = false
-	export let geometry: BufferGeometry | undefined
-	export let material: Material | Material[] | undefined
+	export let geometry: BufferGeometry | undefined = undefined
+	export let material: Material | Material[] | undefined = undefined
 	export let movement: Readable<MovementController>
 
 	let isSpaceDown = false
@@ -64,5 +64,6 @@
 		castShadow
 		geometry={geometry ?? new CylinderGeometry(0.3, 0.3, 0.24)}
 		material={material ?? new MeshStandardMaterial()}
+		rotation={{ x: 90 * DEG2RAD }}
 	/>
 </RigidBody>

@@ -6,7 +6,7 @@
 	import { BoxGeometry, MeshStandardMaterial } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import Car from '$lib/Rendering/Car/Car.svelte'
-	import Ground from '$lib/Rendering/Car/Ground.svelte'
+	import GeneratedCity from '$lib/Rendering/City/GeneratedCity.svelte'
 	import { useArrows } from '../Controllers/useArrows'
 
 	const { gltf } = useGltf(`${base}/models/loop/loop.glb`)
@@ -14,7 +14,7 @@
 
 <DirectionalLight position={{ y: 20, x: 8, z: -3 }} />
 
-<Ground />
+<GeneratedCity />
 
 <RigidBody dominance={1} position={{ y: 3, x: -10, z: -12 }}>
 	<HTML transform sprite pointerEvents={'none'} position={{ y: 1 }}>
