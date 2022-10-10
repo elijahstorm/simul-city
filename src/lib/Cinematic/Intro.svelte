@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { base } from '$app/paths'
 	import { DirectionalLight, PerspectiveCamera } from '@threlte/core'
-	import { HTML, GLTF } from '@threlte/extras'
-	import { AutoColliders } from '@threlte/rapier'
+	import { HTML } from '@threlte/extras'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import Car from '$lib/Rendering/Car/Car.svelte'
 	import Ground from '$lib/Rendering/Car/Ground.svelte'
@@ -12,6 +11,7 @@
 	import { onMount } from 'svelte'
 	import { useBot } from '$lib/Rendering/Controllers/useBot'
 	import { useArrows } from '$lib/Rendering/Controllers/useArrows'
+	import FlyingControls from '$lib/Rendering/Bees/FlyingControls.svelte'
 
 	const [movement, setInputs] = useBot()
 
@@ -41,7 +41,7 @@
 		{ action: stop.up, delay: 2000 },
 		{
 			action: () => {
-				if (browser) goto(`${base}/3d`)
+				// if (browser) goto(`${base}/3d`)
 			},
 			delay: 5000
 		}
@@ -53,14 +53,6 @@
 			return time + command.delay
 		}, 0)
 	)
-
-	const TILES = 3
-	const TILE_SIZE = 140
-
-	const tiles = new Array(TILES ** 2).fill({}).map((_, i) => ({
-		x: (i % TILES) * TILE_SIZE - TILE_SIZE,
-		z: Math.floor(i / TILES) * TILE_SIZE - 2 * TILE_SIZE - 60
-	}))
 </script>
 
 <WorldViewer>
@@ -69,24 +61,21 @@
 
 		<Ground />
 
-		{#each tiles as city}
-			<GLTF
-				castShadow
-				receiveShadow
-				url={base + '/models/city/scene.gltf'}
-				scale={2}
-				rotation={{ z: -0.14 * DEG2RAD, y: -1 * DEG2RAD, x: 4.8 * DEG2RAD }}
-				position={{ ...city, y: -27.2 }}
-			/>
-		{/each}
-
-		<Car position={{ y: 0.01, x: -5 }} rotation={{ y: 90 * DEG2RAD }} {movement}>
-			<PerspectiveCamera
-				rotation={{ x: -90 * DEG2RAD, z: 90 * DEG2RAD, y: 70 * DEG2RAD }}
-				position={{ y: 0.8, x: -0.25, z: 0.35 }}
-				fov={60}
-			/>
-		</Car>
+		<FlyingControls
+			position={{ y: 0.01, x: -5 }}
+			rotation={{ y: 90 * DEG2RAD }}
+			let:position
+			let:rotation
+			movement={useArrows()}
+		>
+			<Car {position} {rotation}>
+				<PerspectiveCamera
+					rotation={{ x: -90 * DEG2RAD, z: 90 * DEG2RAD, y: 0 * DEG2RAD }}
+					position={{ y: 200, x: -0.3, z: 0.35 }}
+					fov={60}
+				/>
+			</Car>
+		</FlyingControls>
 
 		<HTML transform position={{ y: 5, x: -60, z: 50 }} rotation={{ y: 90 * DEG2RAD }}>
 			<img src={base + '/logo/logo_main.png'} alt="Simul-City logo" />

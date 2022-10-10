@@ -23,9 +23,9 @@
 
 	export let position: Position | undefined = undefined
 	export let rotation: Rotation | undefined = undefined
-	export let movement: Readable<MovementController>
+	// export let movement: Readable<MovementController>
 
-	let parentRigidBody: RapierRigidBody
+	// let parentRigidBody: RapierRigidBody
 
 	const carContext = {
 		speed: writable(0)
@@ -55,9 +55,9 @@
 	)
 
 	useFrame(() => {
-		const s = parentRigidBody.linvel()
-		v3.set(s.x, s.y, s.z)
-		carContext.speed.set(v3.length())
+		// const s = parentRigidBody.linvel()
+		// v3.set(s.x, s.y, s.z)
+		// carContext.speed.set(v3.length())
 	})
 
 	const initialIterations = {
@@ -78,68 +78,22 @@
 </script>
 
 <Group {position} {rotation}>
-	<RigidBody bind:rigidBody={parentRigidBody} canSleep={false}>
-		<Collider mass={1} shape={'cuboid'} args={[1.25, 0.4, 0.5]} />
+	<Collider mass={1} shape={'cuboid'} args={[1.25, 0.4, 0.5]} />
 
-		<!-- CAR BODY MESH -->
-		<GLTF
-			castShadow
-			receiveShadow
-			url={base + '/models/cars/2008/2008_baird_silver_coronet_taxicab/scene.gltf'}
-			rotation={{ y: 90 * DEG2RAD }}
-			scale={0.005}
-			position={{ y: -0.6 }}
-		/>
-
-		<slot />
-		<HTML rotation={{ y: 90 * DEG2RAD }} transform position={{ x: 3 }}>
-			<p class="text-xs text-black">
-				{($speed * 3.6).toFixed(0)} km/h
-			</p>
-		</HTML>
-	</RigidBody>
-
-	FRONT AXLES
-	<Axle
-		geometry={$wheelsFL?.geometry}
-		material={$wheelsFL?.material}
-		isSteered
-		side={'left'}
-		{movement}
-		{parentRigidBody}
-		position={{ x: -1.2, z: 0.8, y: -0.4 }}
-		anchor={{ x: -1.2, z: 0.8, y: -0.4 }}
-	/>
-	<Axle
-		geometry={$wheelsFR?.geometry}
-		material={$wheelsFR?.material}
-		isSteered
-		side={'right'}
-		{movement}
-		{parentRigidBody}
-		position={{ x: -1.2, z: -0.8, y: -0.4 }}
-		anchor={{ x: -1.2, z: -0.8, y: -0.4 }}
+	<!-- CAR BODY MESH -->
+	<GLTF
+		castShadow
+		receiveShadow
+		url={base + '/models/cars/2008/2008_baird_silver_coronet_taxicab/scene.gltf'}
+		rotation={{ y: 90 * DEG2RAD }}
+		scale={0.005}
+		position={{ y: -0.6 }}
 	/>
 
-	<!-- BACK AXLES -->
-	<Axle
-		geometry={$wheelsBL?.geometry}
-		material={$wheelsBL?.material}
-		isDriven
-		side={'left'}
-		{movement}
-		{parentRigidBody}
-		position={{ x: 1.2, z: 0.8, y: -0.4 }}
-		anchor={{ x: 1.2, z: 0.8, y: -0.4 }}
-	/>
-	<Axle
-		geometry={$wheelsBR?.geometry}
-		material={$wheelsBR?.material}
-		isDriven
-		side={'right'}
-		{movement}
-		{parentRigidBody}
-		position={{ x: 1.2, z: -0.8, y: -0.4 }}
-		anchor={{ x: 1.2, z: -0.8, y: -0.4 }}
-	/>
+	<slot />
+	<HTML rotation={{ y: 90 * DEG2RAD }} transform position={{ x: 3 }}>
+		<p class="text-xs text-black">
+			{($speed * 3.6).toFixed(0)} km/h
+		</p>
+	</HTML>
 </Group>

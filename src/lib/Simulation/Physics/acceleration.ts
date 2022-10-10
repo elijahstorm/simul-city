@@ -1,7 +1,8 @@
 import { pipe } from '$lib/fp-ts'
 import { config } from '$lib/stores'
 
-let FRICTION = 0.04
+let FRICTION = 0.01
+// let FRICTION = 0.04
 let MAX_SPEED = 5
 config.controls.subscribe(({ friction, maxSpeed }) => {
 	FRICTION = friction

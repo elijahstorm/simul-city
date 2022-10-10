@@ -6,6 +6,7 @@
 	import { AutoColliders } from '@threlte/rapier'
 	import Bee from './Bee.svelte'
 	import FlyingControls from './FlyingControls.svelte'
+	import { useArrows } from '../Controllers/useArrows'
 
 	const getRandom = () => Math.random() * 5 - 2.5
 
@@ -73,7 +74,7 @@
 	/>
 </AutoColliders>
 
-<FlyingControls let:position let:rotation>
+<FlyingControls let:position let:rotation movement={useArrows()}>
 	<Bee {position} {rotation}>
 		<PerspectiveCamera
 			rotation={{ x: -90 * DEG2RAD, z: 90 * DEG2RAD, y: 70 * DEG2RAD }}
