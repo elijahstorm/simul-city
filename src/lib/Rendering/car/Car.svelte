@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import { derived, writable, type Readable, type Writable } from 'svelte/store'
+	import { writable, type Readable, type Writable } from 'svelte/store'
 	type CarContext = {
 		speed: Writable<number>
 	}
@@ -15,7 +15,7 @@
 	import { HTML, GLTF } from '@threlte/extras'
 	import { Collider, RigidBody, useRapier } from '@threlte/rapier'
 	import { getContext, setContext } from 'svelte'
-	import { Vector3, Mesh as ThreeMesh } from 'three'
+	import { Vector3 } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import Axle from './Axle.svelte'
 	import { onDestroy } from 'svelte'

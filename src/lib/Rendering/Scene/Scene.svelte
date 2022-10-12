@@ -4,7 +4,12 @@
 	import Car from '$lib/Rendering/Car/Car.svelte'
 	import GeneratedCity from '$lib/Rendering/City/GeneratedCity.svelte'
 	import { useArrows } from '../Controllers/useArrows'
+	import Engine from './Engine.svelte'
+
+	export let input: SimulationInput
 </script>
+
+<Engine {input} />
 
 <DirectionalLight position={{ y: 20, x: 8, z: -3 }} />
 

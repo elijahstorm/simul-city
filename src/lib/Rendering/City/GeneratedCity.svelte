@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { base } from '$app/paths'
-	import { waveCollapseGenerate } from '$lib/Simulation/Road/generate'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import { useGltf } from '@threlte/extras'
 	import { derived } from 'svelte/store'
@@ -8,18 +7,23 @@
 	import { Mesh, type Position, type Rotation } from '@threlte/core'
 	import { AutoColliders } from '@threlte/rapier'
 	import Ground from '../Car/Ground.svelte'
+	import { config } from '$lib/stores'
+
+	const { master, simulation } = config
+
+	let generatedMap: MapGeneration
+	$: generatedMap = $simulation.world.generatedMap
+	let tileAmount: number
+	$: tileAmount = $master.gridSize
 
 	type Components = typeof CityRoadObjects[number]
 	const { gltf } = useGltf<Components, 'Material_MR'>(`${base}/models/roads/roads.gltf`)
 
 	const Roads = derived(gltf, (gltf) => (!gltf ? null : gltf.nodes))
 
-	const TILES = 5
 	const TILE_SIZE = 16
 	const LOOP_AMOUNT = 3
 	const CITY_LOOP = new Array(LOOP_AMOUNT ** 2).fill(0)
-
-	const generatedMap = waveCollapseGenerate(TILES)
 
 	const usefulRoads = [
 		'sidewalk_x8',
@@ -43,8 +47,8 @@
 			: {
 					object: $Roads[usefulRoads[render.type]] as unknown as Mesh,
 					position: {
-						x: (i % TILES) * TILE_SIZE,
-						z: Math.floor(i / TILES) * TILE_SIZE,
+						x: (i % tileAmount) * TILE_SIZE,
+						z: Math.floor(i / tileAmount) * TILE_SIZE,
 						y: 0
 					},
 					rotation: {
@@ -55,8 +59,8 @@
 	)
 
 	const moveToLocation = (position: Position, index: number) => ({
-		x: (position?.x ?? 0) + ((index % LOOP_AMOUNT) - 1) * TILES * TILE_SIZE,
-		z: (position?.z ?? 0) + (Math.floor(index / LOOP_AMOUNT) - 1) * TILES * TILE_SIZE,
+		x: (position?.x ?? 0) + ((index % LOOP_AMOUNT) - 1) * tileAmount * TILE_SIZE,
+		z: (position?.z ?? 0) + (Math.floor(index / LOOP_AMOUNT) - 1) * tileAmount * TILE_SIZE,
 		y: position.y
 	})
 </script>
