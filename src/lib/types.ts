@@ -37,22 +37,19 @@ namespace CONFIG {
 		type: 'checkbox'
 	}
 
-	export type Sections = 'master' | 'brain' | 'controls'
-	export type Controls = keyof master | keyof brain | keyof controls
-
 	export type Helper = {
 		master: {
-			[key: string]: {
+			[K in keyof master]: {
 				where: 'master'
 			} & (NumberInput | BooleanInput)
 		}
 		brain: {
-			[key: string]: {
+			[K in keyof brain]: {
 				where: 'brain'
 			} & (NumberInput | BooleanInput)
 		}
 		controls: {
-			[key: string]: {
+			[K in keyof controls]: {
 				where: 'controls'
 			} & (NumberInput | BooleanInput)
 		}
@@ -93,6 +90,7 @@ type TileRender = (ctx: ContextProp) => (size: Size) => void
 
 type RenderConfig = {
 	draw: TileRender
+	type: 0 | 1 | 2 | 3 | 4 | 5
 	rotate: 0 | 1 | 2 | 3
 }
 

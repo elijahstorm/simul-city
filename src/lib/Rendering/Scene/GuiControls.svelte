@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { logs, config, controlsHelpers, configDefaults } from '$lib/stores'
+	import { logs, config, controlsHelpers } from '$lib/stores'
 
 	const { master, controls, brain } = config
 
@@ -14,19 +14,28 @@
 		controls: $controls
 	}
 
-	$: configSections = Object.keys(valueReference) as [CONFIG.Sections]
+	$: configSections = Object.keys(valueReference) as [keyof CONFIG.Helper]
 
-	const update = (where: CONFIG.Sections, key: CONFIG.Controls) => (e: InputEvent) => {
-		const target = e.target as HTMLInputElement
-		const type = controlsHelpers[where][key].type
-		const what =
-			type === 'number' ? Number(target.value) : type === 'checkbox' ? target.checked : target.value
+	const configValues = <T extends keyof CONFIG.Helper>(where: T) =>
+		Object.keys(valueReference[where]) as unknown as [keyof CONFIG.Helper[T]]
 
-		storeReference[controlsHelpers[where][key].where].update((v) => ({
-			...v,
-			[key]: what
-		}))
-	}
+	const update =
+		<T extends keyof CONFIG.Helper, K extends keyof CONFIG.Helper[T]>(where: T, key: K) =>
+		(e: InputEvent) => {
+			const target = e.target as HTMLInputElement
+			const type = controlsHelpers[where][key].where
+			const what =
+				type === 'number'
+					? Number(target.value)
+					: type === 'checkbox'
+					? target.checked
+					: target.value
+
+			storeReference[where].update((v) => ({
+				...v,
+				[key]: what
+			}))
+		}
 </script>
 
 <section>
@@ -45,7 +54,7 @@
 <section>
 	{#each configSections as where}
 		<p class="header">{where}</p>
-		{#each Object.keys(valueReference[where]) as key}
+		{#each configValues(where) as key}
 			{#if controlsHelpers[where][key]?.where === where}
 				<div>
 					<p>

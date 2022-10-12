@@ -12,7 +12,7 @@
 <script lang="ts">
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
 	import { Group, useFrame, type Position, type Rotation } from '@threlte/core'
-	import { HTML, useGltf, GLTF } from '@threlte/extras'
+	import { HTML, GLTF } from '@threlte/extras'
 	import { Collider, RigidBody, useRapier } from '@threlte/rapier'
 	import { getContext, setContext } from 'svelte'
 	import { Vector3, Mesh as ThreeMesh } from 'three'

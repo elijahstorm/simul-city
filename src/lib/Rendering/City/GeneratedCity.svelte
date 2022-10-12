@@ -2,45 +2,85 @@
 	import { base } from '$app/paths'
 	import { waveCollapseGenerate } from '$lib/Simulation/Road/generate'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
-	import Ground from '../Car/Ground.svelte'
 	import { useGltf } from '@threlte/extras'
 	import { derived } from 'svelte/store'
-	import type { Mesh as ThreeMesh } from 'three'
-	import { Mesh } from '@threlte/core'
-	import { MeshStandardMaterial } from 'three'
-	import { CylinderGeometry } from 'three'
+	import type { CityRoadObjects } from './objects'
+	import { Mesh, type Position, type Rotation } from '@threlte/core'
+	import { AutoColliders } from '@threlte/rapier'
+	import Ground from '../Car/Ground.svelte'
 
-	const roadComponents = ['road001'] as const
+	type Components = typeof CityRoadObjects[number]
+	const { gltf } = useGltf<Components, 'Material_MR'>(`${base}/models/roads/roads.gltf`)
 
-	type Components = typeof roadComponents[number]
-	const { gltf } = useGltf<Components, 'Material_MR'>(`${base}/models/roads/roads.glb`)
-	const Roads = roadComponents.map((name) =>
-		derived(gltf, (gltf) => {
-			if (!gltf || !gltf.nodes[name]) return
-			return gltf.nodes[name] as ThreeMesh
-		})
-	)
+	const Roads = derived(gltf, (gltf) => (!gltf ? null : gltf.nodes))
 
 	const TILES = 5
-	const TILE_SIZE = 200
+	const TILE_SIZE = 16
+	const LOOP_AMOUNT = 3
+	const CITY_LOOP = new Array(LOOP_AMOUNT ** 2).fill(0)
 
 	const generatedMap = waveCollapseGenerate(TILES)
 
-	const tiles = generatedMap.map.map((render, i) => ({
-		geometry: new CylinderGeometry(0.3, 0.3, 0.24),
-		material: new MeshStandardMaterial(),
-		position: {
-			x: (i % TILES) * TILE_SIZE - TILE_SIZE,
-			z: Math.floor(i / TILES) * TILE_SIZE - 2 * TILE_SIZE - 60
-		},
-		rotation: {
-			x: render.rotate * 90 * DEG2RAD
-		}
-	}))
+	const usefulRoads = [
+		'sidewalk_x8',
+		'road_section_dead_end',
+		'road_section_x8',
+		'road_section_turn_tight',
+		'road_section_t_section',
+		'road_section_cross'
+	] as Components[]
+
+	let tiles: ({
+		object: Mesh
+		position: Position
+		rotation: Rotation
+	} | null)[] = []
+	$: tiles = generatedMap.map.map((render, i) =>
+		$Roads == null
+			? null
+			: render.type == 0
+			? null
+			: {
+					object: $Roads[usefulRoads[render.type]] as unknown as Mesh,
+					position: {
+						x: (i % TILES) * TILE_SIZE,
+						z: Math.floor(i / TILES) * TILE_SIZE,
+						y: 0
+					},
+					rotation: {
+						x: 90 * DEG2RAD,
+						z: (render.rotate * 90 + (render.type == 1 ? 270 : render.type == 2 ? 90 : 0)) * DEG2RAD
+					}
+			  }
+	)
+
+	const moveToLocation = (position: Position, index: number) => ({
+		x: (position?.x ?? 0) + ((index % LOOP_AMOUNT) - 1) * TILES * TILE_SIZE,
+		z: (position?.z ?? 0) + (Math.floor(index / LOOP_AMOUNT) - 1) * TILES * TILE_SIZE,
+		y: position.y
+	})
 </script>
 
-{#each tiles as city}
-	<Mesh castShadow receiveShadow {...city} />
-{/each}
-
 <Ground />
+
+{#if $Roads}
+	{#each CITY_LOOP as loop, index}
+		{#each tiles as city}
+			{#if city}
+				<AutoColliders shape={'trimesh'}>
+					<Mesh
+						castShadow
+						receiveShadow
+						position={moveToLocation(city.position, index)}
+						rotation={city.rotation}
+						geometry={city.object.geometry}
+						material={city.object.material}
+						scale={city.object.scale}
+					/>
+				</AutoColliders>
+			{/if}
+		{/each}
+	{/each}
+
+	<slot />
+{/if}

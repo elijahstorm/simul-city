@@ -5,7 +5,7 @@ export const canvas = writable() as Writable<HTMLCanvasElement>
 export const context = writable() as Writable<ContextProp>
 export const mounted = writable() as Writable<boolean>
 export const logs = writable({}) as Writable<{
-	[key: string]: any
+	[key: string]: unknown
 }>
 
 export const configDefaults: {
@@ -13,7 +13,7 @@ export const configDefaults: {
 	master: CONFIG.master
 	brain: CONFIG.brain
 	controls: CONFIG.controls
-} = {
+} = Object.freeze({
 	simulation: {
 		currentId: 0,
 		carSpots: [
@@ -84,7 +84,7 @@ export const configDefaults: {
 		carBreakStrength: 0.4,
 		friction: 0.04
 	}
-} as const
+})
 
 export const config = {
 	simulation: writable<CONFIG.simulation>(configDefaults.simulation),

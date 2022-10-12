@@ -312,12 +312,16 @@ const tiles = [
 ]
 
 export const conditional: ((connections: Connection) => RenderConfig)[] = [
-	() => ({ rotate: 0, draw: tiles[4] }),
-	(connections) => ({ rotate: connections.indexOf(true) as 0 | 1 | 2 | 3, draw: tiles[5] }),
+	() => ({ type: 0, rotate: 0, draw: tiles[4] }),
+	(connections) => ({
+		type: 1,
+		rotate: connections.indexOf(true) as 0 | 1 | 2 | 3,
+		draw: tiles[5]
+	}),
 	(connections) => {
-		const isStriaght = connections[0] == connections[2]
+		const isStraight = connections[0] == connections[2]
 
-		const rotate = isStriaght
+		const rotate = isStraight
 			? connections[0]
 				? 0
 				: 1
@@ -328,9 +332,9 @@ export const conditional: ((connections: Connection) => RenderConfig)[] = [
 			: connections[2] && connections[1]
 			? 2
 			: 3
-		const draw = isStriaght ? tiles[0] : tiles[3]
+		const draw = isStraight ? tiles[0] : tiles[3]
 
-		return { rotate, draw }
+		return { type: isStraight ? 2 : 3, rotate, draw }
 	},
 	(connections) => {
 		const rotate =
@@ -341,9 +345,9 @@ export const conditional: ((connections: Connection) => RenderConfig)[] = [
 				: connections[0] && connections[1] && connections[2]
 				? 2
 				: 3
-		return { rotate, draw: tiles[2] }
+		return { type: 4, rotate, draw: tiles[2] }
 	},
-	() => ({ rotate: 0, draw: tiles[1] })
+	() => ({ type: 5, rotate: 0, draw: tiles[1] })
 ]
 
 const wallLoc = lerp(0, 1, 1 / LANE_AMOUNT)

@@ -9,5 +9,6 @@
 		receiveShadow
 		geometry={new BoxGeometry(1500, 1, 1500)}
 		material={new MeshStandardMaterial()}
+		position={{ y: -1 }}
 	/>
 </AutoColliders>
