@@ -34,3 +34,5 @@
 		if ($mounted) start()
 	}
 </script>
+
+<slot />

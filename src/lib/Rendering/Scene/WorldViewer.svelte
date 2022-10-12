@@ -17,7 +17,9 @@
 			{/if}
 
 			<slot name="scene">
-				<Scene />
+				<Engine {input}>
+					<Scene />
+				</Engine>
 			</slot>
 
 			<HTML slot="fallback" transform>
@@ -32,8 +34,6 @@
 </div>
 
 <slot />
-
-<Engine {input} />
 
 <style>
 	.wrapper {

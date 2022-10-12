@@ -9,7 +9,7 @@
 	import Engine from './Engine.svelte'
 
 	export let debug = false
-	export let input: SimulationInput
+	export let input: SimulationInput = null
 
 	const { simulation, controls } = config
 
