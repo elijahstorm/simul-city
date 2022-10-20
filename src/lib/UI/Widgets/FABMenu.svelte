@@ -48,7 +48,7 @@
 			}
 		},
 		threeDim: {
-			text: 'Render in 3D',
+			text: 'Render in 3D (WIP / not recommended)',
 			action: () => {
 				if (browser) goto(`${base}/${$page.routeId?.replace('2d', '3d')}`)
 			}

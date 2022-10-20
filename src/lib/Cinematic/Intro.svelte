@@ -27,10 +27,10 @@
 	} as const
 
 	const commands = [
-		{ action: start.up, delay: 5000 },
-		{ action: stop.up, delay: 5000 },
+		{ action: start.up, delay: 6000 },
+		{ action: stop.up, delay: 4000 },
 		{ action: start.down, delay: 400 },
-		{ action: start.right, delay: 200 },
+		{ action: start.right, delay: 600 },
 		{ action: stop.down, delay: 400 },
 		{ action: stop.right, delay: 1000 },
 		{ action: start.up, delay: 0 },
@@ -39,7 +39,8 @@
 		{ action: stop.up, delay: 2000 },
 		{
 			action: () => {
-				if (browser) goto(`${base}/3d`)
+				// if (browser) goto(`${base}/3d`)
+				if (browser) goto(`${base}/2d`)
 			},
 			delay: 5000
 		}
@@ -71,16 +72,22 @@
 				receiveShadow
 				url={base + '/models/city/scene.gltf'}
 				scale={2}
-				position={{ ...city }}
+				rotation={{ z: -0.14 * DEG2RAD, y: -1 * DEG2RAD, x: 4.8 * DEG2RAD }}
+				position={{ ...city, y: -27.2 }}
 			/>
+			<!-- position={{ ...city }} -->
 		{/each}
 
 		<Ground />
 
-		<Car {movement}>
+		<Car {movement} position={{ y: 0.01, x: -5 }} rotation={{ y: 90 * DEG2RAD }}>
+			<HTML rotation={{ y: -90 * DEG2RAD }} transform position={{ x: -40, y: -13 }}>
+				<p class="text-xs text-black" style="padding: 2rem;">Work in Progress</p>
+			</HTML>
+
 			<PerspectiveCamera
-				rotation={{ x: -90 * DEG2RAD, z: 90 * DEG2RAD, y: 0 * DEG2RAD }}
-				position={{ y: 200, x: -0.3, z: 0.35 }}
+				rotation={{ x: -90 * DEG2RAD, z: 90 * DEG2RAD, y: 90 * DEG2RAD }}
+				position={{ y: 0.7, x: -0.3, z: 0.35 }}
 				fov={60}
 			/>
 		</Car>
