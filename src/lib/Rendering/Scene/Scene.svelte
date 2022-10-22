@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DirectionalLight, PerspectiveCamera } from '@threlte/core'
+	import { DirectionalLight, PerspectiveCamera, OrbitControls } from '@threlte/core'
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import GeneratedCity from '$lib/Rendering/City/GeneratedCity.svelte'
 	import Traffic from '../Car/Traffic.svelte'
@@ -17,7 +17,7 @@
 	const INSIDE_VIEW = {
 		type: 2,
 		rotation: { x: -90 * DEG2RAD, z: 90 * DEG2RAD, y: 90 * DEG2RAD },
-		position: { y: 0.8, x: -0.25, z: 0.35 }
+		position: { y: 0.7, x: -0.25, z: 0.35 }
 	}
 
 	const VIEWS = [TOPDOWN_VIEW, BEHIND_VIEW, INSIDE_VIEW]
@@ -35,6 +35,8 @@
 
 <GeneratedCity>
 	<Traffic>
-		<PerspectiveCamera {...cameraView} fov={60} />
+		<PerspectiveCamera {...cameraView} fov={60}>
+			<!-- <OrbitControls /> -->
+		</PerspectiveCamera>
 	</Traffic>
 </GeneratedCity>

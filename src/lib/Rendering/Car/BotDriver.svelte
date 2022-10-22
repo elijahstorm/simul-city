@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { useBot } from '../Controllers/useBot'
-	import { useFrame } from '@threlte/core'
 	import { useArrows } from '../Controllers/useArrows'
 
 	const arrowCon = useArrows()
@@ -21,3 +20,4 @@
 </script>
 
 <slot movement={arrowCon} />
+<!-- <slot {movement} /> -->

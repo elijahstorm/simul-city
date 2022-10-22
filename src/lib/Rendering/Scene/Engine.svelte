@@ -31,7 +31,7 @@
 	}
 	$: {
 		$master
-		if ($mounted) start()
+		// if ($mounted) start() TODO
 	}
 </script>
 

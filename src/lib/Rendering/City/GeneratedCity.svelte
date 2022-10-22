@@ -68,7 +68,7 @@
 <Ground />
 
 {#if $Roads}
-	{#each CITY_LOOP as loop, index}
+	{#each CITY_LOOP as loop, index (index)}
 		{#each tiles as city}
 			{#if city}
 				<AutoColliders shape={'trimesh'}>
