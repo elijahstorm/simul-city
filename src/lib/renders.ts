@@ -5,9 +5,7 @@ import { derived } from 'svelte/store'
 const carModelName = 'Sketchfab_model'
 
 export const taxiCar = derived(
-	useGltf<string, 'Material_MR'>(
-		`${base}/models/cars/2008/2008_baird_silver_coronet_taxicab/scene.gltf`
-	).gltf,
+	useGltf<string, 'Material_MR'>(`${base}/models/.old.city/glb/car-8.gltf`).gltf,
 	(gltf) => (!gltf || !gltf.nodes[carModelName] ? null : gltf.nodes[carModelName])
 )
 
