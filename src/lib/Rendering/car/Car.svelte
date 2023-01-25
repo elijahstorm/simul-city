@@ -19,7 +19,6 @@
 	import { DEG2RAD } from 'three/src/math/MathUtils'
 	import Axle from './Axle.svelte'
 	import { onDestroy } from 'svelte'
-	import { taxiCar, simpleCar } from '$lib/renders'
 
 	export let position: Position | undefined = undefined
 	export let rotation: Rotation | undefined = undefined
@@ -63,63 +62,3 @@
 	})
 </script>
 
-{#if $simpleCar && $taxiCar}
-	<Group {position} {rotation}>
-		<RigidBody bind:rigidBody={parentRigidBody} canSleep={false}>
-			<Collider mass={1} shape={'cuboid'} args={[1.25, 0.4, 0.5]} />
-
-			<!-- CAR BODY OBJECT -->
-			<Object3DInstance
-				castShadow
-				receiveShadow
-				object={simple ? $simpleCar : $taxiCar}
-				scale={0.005}
-				rotation={{ x: -90 * DEG2RAD, z: 90 * DEG2RAD }}
-				position={{ y: -0.6 }}
-			/>
-
-			<slot />
-			<HTML rotation={{ y: 90 * DEG2RAD }} transform position={{ x: 3 }}>
-				<p class="text-xs text-black">
-					{($speed * 3.6).toFixed(0)} km/h
-				</p>
-			</HTML>
-		</RigidBody>
-
-		FRONT AXLES
-		<Axle
-			isSteered
-			side={'left'}
-			{movement}
-			{parentRigidBody}
-			position={{ x: -1.2, z: 0.6, y: -0.4 }}
-			anchor={{ x: -1.2, z: 0.6, y: -0.4 }}
-		/>
-		<Axle
-			isSteered
-			side={'right'}
-			{movement}
-			{parentRigidBody}
-			position={{ x: -1.2, z: -0.6, y: -0.4 }}
-			anchor={{ x: -1.2, z: -0.6, y: -0.4 }}
-		/>
-
-		<!-- BACK AXLES -->
-		<Axle
-			isDriven
-			side={'left'}
-			{movement}
-			{parentRigidBody}
-			position={{ x: 1.2, z: 0.6, y: -0.4 }}
-			anchor={{ x: 1.2, z: 0.6, y: -0.4 }}
-		/>
-		<Axle
-			isDriven
-			side={'right'}
-			{movement}
-			{parentRigidBody}
-			position={{ x: 1.2, z: -0.6, y: -0.4 }}
-			anchor={{ x: 1.2, z: -0.6, y: -0.4 }}
-		/>
-	</Group>
-{/if}
