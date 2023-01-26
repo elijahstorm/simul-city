@@ -5,8 +5,8 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"release": "git stash && pnpm releaseBuild ; git stash pop",
-		"releaseBuild": "pnpm build && git checkout release && git add docs/ && git commit -m \"Released: `date +'%Y-%m-%d %H:%M:%S'`\" && git push && git checkout develop",
+		"release": "git stash && pnpm releaseBuild ; git stash pop || echo 'Finished with a clean working tree'",
+		"releaseBuild": "git checkout release && git merge main --no-edit && pnpm build && git add docs/ && git commit -m \"Released: `date +'%Y-%m-%d %H:%M:%S'`\" && git push && git checkout main",
 		"package": "svelte-kit package",
 		"preview": "vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
