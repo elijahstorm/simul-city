@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment'
-	import { goto } from '$app/navigation'
 	import Burger from '$lib/UI/Widgets/Burger.svelte'
 	import GlassyButton from '$lib/UI/Widgets/GlassyButton.svelte'
 	import { fade, fly } from 'svelte/transition'
@@ -10,15 +8,11 @@
 	const baseButtons = [
 		{
 			text: 'Go back to introduction',
-			action: () => {
-				if (browser) goto(base)
-			}
+			href: `${base}/`
 		},
 		{
 			text: 'See more works by me',
-			action: () => {
-				if (browser) goto('https://elijahstorm.github.io/')
-			}
+			href: 'https://elijahstorm.github.io/'
 		}
 	]
 
@@ -28,60 +22,45 @@
 	$: Controls = {
 		add: {
 			text: 'View with controls',
-			action: () => {
-				if (browser) goto(`${base}/${$page.routeId}/controls`)
-			}
+			href: `${base}${$page.route.id}/controls`
 		},
 		remove: {
 			text: 'Turn off controls',
-			action: () => {
-				if (browser) goto(`${base}/${$page.routeId?.replace('/controls', '')}`)
-			}
+			href: `${base}${$page.route.id?.replace('/controls', '')}`
 		}
 	}
 
 	$: RenderStyle = {
 		twoDim: {
 			text: 'Show in TopDown simple style',
-			action: () => {
-				if (browser) goto(`${base}/${$page.routeId?.replace('3d', '2d')}`)
-			}
+			href: `${base}/2d/controls`
 		},
 		threeDim: {
 			text: 'Render in 3D (WIP / not recommended)',
-			action: () => {
-				if (browser) goto(`${base}/${$page.routeId?.replace('2d', '3d')}`)
-			}
+			href: `${base}/3d`
 		}
 	}
 
 	$: {
 		isClosed
 		buttons = baseButtons.slice()
-		if ($page.routeId?.includes('3d')) {
+		if ($page.route.id?.includes('3d')) {
 			buttons.push(RenderStyle.twoDim)
 		} else {
 			buttons.push(RenderStyle.threeDim)
 		}
-		if ($page.routeId?.includes('controls')) {
+		if ($page.route.id?.includes('controls')) {
 			buttons.push(Controls.remove)
 		} else {
 			buttons.push(Controls.add)
 		}
 	}
-
-	const perform = (action: VoidFunction) => {
-		action()
-		isClosed = true
-	}
-
-	const toggle = () => (isClosed = !isClosed)
 </script>
 
-{#if $page.routeId != ''}
+{#if $page.route.id !== '/'}
 	<section in:fade out:fade>
 		<div class="burger">
-			<GlassyButton callback={toggle}>
+			<GlassyButton callback={() => (isClosed = !isClosed)}>
 				<Burger open={!isClosed} />
 			</GlassyButton>
 		</div>
@@ -92,7 +71,9 @@
 					in:fly={{ y: -100, delay: 40 * index }}
 					out:fly={{ y: -100, x: 100, delay: 20 * index }}
 				>
-					<GlassyButton callback={() => perform(button.action)}>{button.text}</GlassyButton>
+					<a href={button.href}>
+						<GlassyButton>{button.text}</GlassyButton>
+					</a>
 				</div>
 			{/each}
 		{/if}
@@ -112,5 +93,9 @@
 
 	.burger {
 		z-index: 100;
+	}
+
+	a {
+		display: contents;
 	}
 </style>

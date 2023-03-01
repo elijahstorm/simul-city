@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let callback: VoidFunction
+	export let callback = () => {}
 </script>
 
 <button on:click={callback}>
