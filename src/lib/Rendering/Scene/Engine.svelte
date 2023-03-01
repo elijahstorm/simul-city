@@ -7,7 +7,7 @@
 
 	export let input: SimulationInput
 
-	const { master, simulation, brain, controls } = config
+	const { master, simulation, brain } = config
 
 	onMount(() => {
 		$mounted = true
@@ -31,7 +31,7 @@
 	}
 	$: {
 		$master
-		// if ($mounted) start() TODO
+		if ($mounted) start()
 	}
 </script>
 

@@ -1,6 +1,6 @@
 import { pipe } from '$lib/fp-ts'
 import { config } from '$lib/stores'
-import { distanceFromDestination } from '../Sensor.ts/destination'
+import { distanceFromDestination } from '../Sensor/destination'
 
 let totalMapSize = 100
 let MIN_FITNESS = -400

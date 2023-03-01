@@ -2,7 +2,7 @@ import { pipe } from '$lib/fp-ts'
 import { config } from '$lib/stores'
 import { drawCars } from '../Cars/car'
 import { roads } from '../Road/road'
-import { drawSensor } from '../Sensor.ts/sensor'
+import { drawSensor } from '../Sensor/sensor'
 
 type Direction = 0 | -1 | 1
 

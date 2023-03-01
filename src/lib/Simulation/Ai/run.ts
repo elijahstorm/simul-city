@@ -2,7 +2,7 @@ import { pipe } from '$lib/fp-ts'
 import { config } from '$lib/stores'
 import { split } from '$lib/utils'
 import { checkControls } from '../Controls/controls'
-import { destinationAngleAccuracy } from '../Sensor.ts/destination'
+import { destinationAngleAccuracy } from '../Sensor/destination'
 import { prediction, watch } from './network'
 import { setNetworkToRender } from './render'
 

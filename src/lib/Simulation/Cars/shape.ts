@@ -1,5 +1,5 @@
 import { polyIntersect } from '$lib/utils'
-import { cull } from '../Sensor.ts/collision'
+import { cull } from '../Sensor/collision'
 
 export const polygon = (box: HitBox) => {
 	const polygon: Polygon = []

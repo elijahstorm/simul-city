@@ -1,9 +1,9 @@
 import { pipe } from '$lib/fp-ts'
 import { polygon, collide, combine } from './shape'
 import { applyForce, worldWrap } from './movement'
-import { sense } from '../Sensor.ts/sensor'
+import { sense } from '../Sensor/sensor'
 import { config } from '$lib/stores'
-import { destinationAngleAccuracy, updatePath } from '../Sensor.ts/destination'
+import { destinationAngleAccuracy, updatePath } from '../Sensor/destination'
 
 let CAR_FOCUS = 0
 config.controls.subscribe(({ cameraFocus }) => {
